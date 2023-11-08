@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Member;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,6 @@ class PaymentController extends Controller
     public function processPayment(Request $request)
     {
         // Set your Stripe Secret Key
-
         Stripe::setApiKey(config('stripe.sk'));
         $user = User::where('email', $request->email)->first();
         $paymentMethodId = $request->paymentMethodId;
@@ -25,7 +25,7 @@ class PaymentController extends Controller
             // Create a PaymentIntent
             $intent = PaymentIntent::create([
                 'payment_method' => $paymentMethodId,
-                'amount' => 1000, // Set the amount to be charged (in cents)
+                'amount' => $request->totalPayment*100, // Set the amount to be charged (in cents)
                 'currency' => 'usd',
                 'confirmation_method' => 'manual',
                 'confirm' => true,
@@ -63,6 +63,9 @@ class PaymentController extends Controller
             //     return response()->json(['success' => false, 'message' => 'Payment failed']);
             // }
         } catch (\Exception $e) {
+            foreach ($request->memberIDs as $memberID) {
+                Member::where('id',$memberID)->delete();
+            }
             // Handle any exceptions or errors
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }

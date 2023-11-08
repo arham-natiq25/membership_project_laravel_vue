@@ -189,9 +189,17 @@
     </div>
     <!-- Customers Area  -->
     <div v-show="showCheckout">
-    <div>
-        <button class="btn btn-default" @click="goBack">Back</button>
-      <h3>Proceed to Checkout</h3>
+        <div v-if="errorMessage">
+      <p class="alert alert-danger">{{ errorMessage }}</p>
+          </div>
+        <div>
+            <button class="btn btn-default" @click="goBack">Back</button>
+            <h3>Proceed to Checkout</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <p>Total Payment: $ {{ totalPayment }}</p>
+                </div>
+            </div>
       <div class="row">
         <div class="col-md-10">
           <div class="form-group">
@@ -233,13 +241,11 @@
       <label for="card-element">
         Credit or debit card
       </label>
-      <div class="col-md-6" id="card-element">
+      <div class="col-md-8" id="card-element">
         <!-- Stripe.js injects the Card Element -->
       </div>
       <button @click="submitPayment" class="btn btn-success mt-3">Payment</button>
-      <div v-if="errorMessage">
-      <p>{{ errorMessage }}</p>
-    </div>
+
     </div>
     </div>
   </div>
@@ -285,6 +291,13 @@ export default {
     this.fetchAll();
     this.loadStripe();
   },
+  computed: {
+    totalPayment() {
+      const membershipPrice = this.items.membership_price;
+      const numberOfMembers = this.items.memberships.length;
+      return membershipPrice * numberOfMembers;
+    },
+},
   // functions are created here thats implement on templet divs
   methods: {
     // This function is getting request through axios and fetch data from db and we mount them .
@@ -293,9 +306,13 @@ export default {
         this.list = res.data.filter((item) => item.status === 1);
         this.items.membership_id = this.list[0].id;
         this.items.membership_price=this.list[0].first_price
-        console.log(this.items.membership_price);
       });
     },
+    calculateTotalPayment() {
+    const membershipPrice = this.items.membership_price;
+    const numberOfMembers = this.items.memberships.length;
+    return membershipPrice * numberOfMembers;
+  },
     showUserDetails() {
       for (let i = 0; i < parseInt(this.membershipCount); i++) {
         this.items.memberships.push({
@@ -313,8 +330,11 @@ export default {
     goBack() {
       this.showMemberships = true;
       this.showUserDetailsForm = false;
+      this.showCheckout=false,
       this.errors={}
       this.items.memberships = [];
+      this.resetFormFields();
+
     },
     addMember() {
       this.items.memberships.push({
@@ -350,6 +370,25 @@ export default {
         this.errorMessage = 'Stripe is not available';
       }
     },
+    resetFormFields() {
+    this.items = {
+      memberships: [],
+      membership_id : this.list[0].id,
+      fname: "",
+      lname: "",
+      dob: "",
+      gender: "",
+      activity: "",
+      membership_price:this.list[0].first_price,
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+    };
+    this.savedMemberIDs = [];
+    this.membershipCount = 0;
+    this.errors = {};
+  },
  async submitPayment() {
       const { paymentMethod, error } = await this.stripe.createPaymentMethod({
         type: 'card',
@@ -365,13 +404,15 @@ export default {
     },
     async processPayment(paymentMethodId) {
       try {
+        const totalPayment = this.calculateTotalPayment(); // Calculate the total payment
         const response = await fetch('/api/process-payment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             paymentMethodId,
+            totalPayment,
             email: this.items.email,
             name: this.items.name,
             password: this.items.password,
@@ -380,8 +421,25 @@ export default {
         }),
         });
 
+
+
         const responseData = await response.json();
         // Handle the response from the server after payment processing
+      if (responseData.success) {
+        this.successMessage = responseData.message;
+
+        // Toggle section visibility
+        this.showMemberships = true;
+        this.showUserDetailsForm = false;
+        this.showCheckout = false;
+
+        // Clear the success message after 10 seconds
+        setTimeout(() => {
+          this.successMessage = "";
+        }, 10000);
+
+        this.resetFormFields();
+      }
       } catch (error) {
         this.errorMessage = 'An error occurred while processing the payment';
       }
