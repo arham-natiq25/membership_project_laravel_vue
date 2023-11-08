@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\MembershipHomeController;
+use App\Http\Controllers\Payment\newPaymentController as ControllersNewPaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
+
 
 Route::get('/', function () {
     return view('frontend.index');

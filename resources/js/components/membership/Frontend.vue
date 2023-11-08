@@ -236,7 +236,7 @@
       <button @click="submitPayment">Pay</button>
       <div v-if="errorMessage">
       <p>{{ errorMessage }}</p>
-    </div> 
+    </div>
     </div>
   </div>
 </template>
@@ -247,11 +247,11 @@ export default {
   // Data that are used in table to manuplate ....
   data() {
     return {
+     list: [],
       stripe: null,
       elements: null,
-      errorMessage: null,  
+      errorMessage: null,
       successMessage: "",
-      list: [],
       successMessage: "",
       items: {
         membership_id: "",
@@ -338,37 +338,37 @@ export default {
         this.errorMessage = 'Stripe is not available';
       }
     },
-//  async submitPayment() {
-//       const { paymentMethod, error } = await this.stripe.createPaymentMethod({
-//         type: 'card',
-//         card: this.elements.getElement('card'),
-//       });
+ async submitPayment() {
+      const { paymentMethod, error } = await this.stripe.createPaymentMethod({
+        type: 'card',
+        card: this.elements.getElement('card'),
+      });
 
-//       if (error) {
-//         this.errorMessage = error.message;
-//       } else {
-//         // Send paymentMethod.id to the backend to process the payment
-//         this.processPayment(paymentMethod.id);
-//       }
-//     },
-//     async processPayment(paymentMethodId) {
-//       try {
-//         const response = await fetch('/api/process-payment', {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({ paymentMethodId }),
-//         });
+      if (error) {
+        this.errorMessage = error.message;
+      } else {
+        // Send paymentMethod.id to the backend to process the payment
+        this.processPayment(paymentMethod.id);
+      }
+    },
+    async processPayment(paymentMethodId) {
+      try {
+        const response = await fetch('/api/process-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ paymentMethodId }),
+        });
 
-//         const responseData = await response.json();
-//         // Handle the response from the server after payment processing
-//       } catch (error) {
-//         this.errorMessage = 'An error occurred while processing the payment';
-//       }
-//     },
+        const responseData = await response.json();
+        // Handle the response from the server after payment processing
+      } catch (error) {
+        this.errorMessage = 'An error occurred while processing the payment';
+      }
+    },
 
-//     // members save in database :
+    // members save in database :
     memberSave() {
         this.clearErrors();
       try {
