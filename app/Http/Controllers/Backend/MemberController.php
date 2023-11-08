@@ -44,6 +44,7 @@ class MemberController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
+        $savedMemberIDs = [];
 
         $memberships = $request->input('memberships');
 
@@ -63,10 +64,13 @@ class MemberController extends Controller
             ]);
 
             $member->save(); // Save the record for each membership
+
+            $savedMemberIDs[] = $member->id;
         }
 
         return response()->json([
             'message' => 'Memberships saved successfully',
+            'savedMemberIDs' => $savedMemberIDs // Sending the IDs of the saved members
 
         ]);
     }

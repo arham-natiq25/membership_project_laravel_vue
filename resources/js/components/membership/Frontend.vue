@@ -188,13 +188,15 @@
       </div>
     </div>
     <!-- Customers Area  -->
+    <div v-show="showCheckout">
     <div>
+        <button class="btn btn-default" @click="goBack">Back</button>
       <h3>Proceed to Checkout</h3>
       <div class="row">
         <div class="col-md-10">
           <div class="form-group">
             <label for="name"> Name</label>
-            <input type="text" class="form-control" id="name" name="name" />
+            <input type="text" class="form-control" id="name" name="name"  v-model="items.name" />
           </div>
         </div>
       </div>
@@ -202,17 +204,18 @@
         <div class="col-md-5">
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" name="email" />
+            <input type="email" class="form-control" id="email"  v-model="items.email" name="email" />
           </div>
         </div>
         <div class="col-md-5">
           <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password" >Password</label>
             <input
               type="password"
               class="form-control"
               id="password"
               name="password"
+              v-model="items.password"
             />
           </div>
         </div>
@@ -221,7 +224,7 @@
         <div class="col-md-7">
           <div class="form-group">
             <label for="phone">Parent phone # </label>
-            <input type="text" class="form-control" id="phone" name="phone" />
+            <input type="text" class="form-control" id="phone" name="phone" v-model="items.phone" />
           </div>
         </div>
       </div>
@@ -230,12 +233,13 @@
       <label for="card-element">
         Credit or debit card
       </label>
-      <div id="card-element">
+      <div class="col-md-6" id="card-element">
         <!-- Stripe.js injects the Card Element -->
       </div>
-      <button @click="submitPayment">Pay</button>
+      <button @click="submitPayment" class="btn btn-success mt-3">Payment</button>
       <div v-if="errorMessage">
       <p>{{ errorMessage }}</p>
+    </div>
     </div>
     </div>
   </div>
@@ -261,10 +265,17 @@ export default {
         dob: "",
         gender: "",
         activity: "",
-      },
+        membership_price:"",
+        name:"",
+        email:"",
+        password:"",
+        phone:"",
+    },
+      savedMemberIDs: [],
       membershipCount: 0,
       showUserDetailsForm: false,
       showMemberships: true,
+      showCheckout: false,
       errors: {},
     };
   },
@@ -281,7 +292,8 @@ export default {
       axios.get("/api/membership").then((res) => {
         this.list = res.data.filter((item) => item.status === 1);
         this.items.membership_id = this.list[0].id;
-        console.log(this.items.membership_id);
+        this.items.membership_price=this.list[0].first_price
+        console.log(this.items.membership_price);
       });
     },
     showUserDetails() {
@@ -358,7 +370,14 @@ export default {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ paymentMethodId }),
+          body: JSON.stringify({ 
+            paymentMethodId,
+            email: this.items.email,
+            name: this.items.name,
+            password: this.items.password,
+            phone: this.items.phone,
+            memberIDs: this.savedMemberIDs, // Include member IDs
+        }),
         });
 
         const responseData = await response.json();
@@ -386,7 +405,7 @@ export default {
               gender: "",
               activity: "",
             }));
-
+            this.savedMemberIDs = response.data.savedMemberIDs;
             // Display the success message
             this.successMessage = response.data.message;
 
@@ -394,6 +413,10 @@ export default {
             setTimeout(() => {
               this.successMessage = "";
             }, 10000);
+
+            this.showCheckout = true;
+            this.showMemberships = false; // Hide the member section
+            this.showUserDetailsForm = false; // Hide the user details section
           })
           .catch((error) => {
             console.error("Error:", error);
