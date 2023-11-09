@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     use HasFactory;
-    protected $fillable = ['member_id', 'user_id', 'phone_no', 'paymentID'];
+    protected $fillable = ['members_id', 'user_id', 'phone_no', 'paymentID','name'];
 
     public function users(){
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(User::class);
+    }
+    function members() {
+        return $this->hasMany(Member::class);
     }
 }

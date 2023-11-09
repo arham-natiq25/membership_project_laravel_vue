@@ -21,4 +21,7 @@ class Member extends Model
     public function memberships() {
         return $this->belongsTo(Membership::class);
     }
+    public function customers()  {
+        return $this->belongsTo(Customer::class);
+    }
 }

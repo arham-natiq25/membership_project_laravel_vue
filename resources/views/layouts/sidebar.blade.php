@@ -55,6 +55,14 @@
             </ul>
           </li>
           <li class="nav-item">
+            <a href="{{route('customer')}}" class="nav-link">
+                <i class="far fa-address-card nav-icon"></i>
+              <p>
+                Customers
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="../gallery.html" class="nav-link">
               <i class="nav-icon far fa-image"></i>
               <p>

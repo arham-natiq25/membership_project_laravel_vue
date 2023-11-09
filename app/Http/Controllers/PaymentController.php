@@ -41,15 +41,15 @@ class PaymentController extends Controller
                 ]);
                 $user = User::where('email', $request->email)->first();
 
-                foreach ($request->memberIDs as $memberID) {
+
 
                   $customer=   Customer::create([
-                        'member_id'=>$memberID,
+                        'name'=>$request->name,
+                        'members_id'=>json_encode($request->memberIDs),
                         'user_id'=>$user->id,
                         'phone_no'=>$request->phone,
                         'paymentID'=>$paymentMethodId
                     ]);
-                }
             }
 
 

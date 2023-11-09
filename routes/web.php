@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\MembershipHomeController;
 use App\Http\Controllers\Payment\newPaymentController as ControllersNewPaymentController;
 use App\Http\Controllers\ProfileController;
@@ -24,7 +25,7 @@ Route::get('/', function () {
 });
 
 Route::get('/membership',MembershipHomeController::class)->name('membership');
-
+Route::get('/customer',CustomerController::class)->name('customer');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
