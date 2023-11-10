@@ -50,6 +50,12 @@ class PaymentController extends Controller
                         'phone_no'=>$request->phone,
                         'paymentID'=>$paymentMethodId
                     ]);
+
+                    foreach ($request->memberIDs as $memberID) {
+                        Member::where('id',$memberID)->update([
+                            'customer_id'=>$customer->id
+                        ]);
+                    }
             }
 
 

@@ -14,8 +14,16 @@ class CustomerDetailsController extends Controller
      */
     public function index()
     {
-        $customer = Customer::all();
-        return $customer;
+        $customers = Customer::all();
+
+        // Fetching member details for each customer
+        foreach ($customers as $customer) {
+            $memberIds = json_decode($customer->members_id);
+            $members = Member::whereIn('id', $memberIds)->get();
+            $customer->members = $members; // Attach member details to each customer
+        }
+
+        return response()->json($customers);
     }
 
     /**
@@ -61,16 +69,19 @@ class CustomerDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Customer $customer)
+    public function destroy($customerId)
     {
-        // foreach($customer->member_id as memID){
+        $customer = Customer::findOrFail($customerId);
+        $memberIds = json_decode($customer->members_id);
 
-        //     Member::where('id',memID)->delete();
-        // }
+        foreach ($memberIds as $mem) {
+            Member::where('id',$mem)->delete();
+        }
+        // Delete associated members
+
+        // Delete the customer
         $customer->delete();
-        return response()->json([
-            'message' => 'Membership deleted successfully',
-        ]);
 
+        return response()->json(['message' => 'Customer and associated members deleted successfully']);
     }
 }
