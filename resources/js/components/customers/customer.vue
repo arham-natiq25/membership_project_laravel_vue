@@ -1,4 +1,26 @@
 <template>
+     <div class="row">
+    <div class="col-md-12 m-3"> <!-- Set the column width to 12 to take up full width -->
+      <div class="form-inline">
+        <div class="input-group" style="width: 100%;"> <!-- Set width to 100% -->
+          <input
+            class="form-control"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            v-model="searchQuery"
+             @input="search"
+            style="width: 60%;"
+          />
+          <div class="input-group-append">
+            <button class="btn btn-primary" @click="search">
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 <div v-if="!selectedCustomer">
 <div class="row">
     <h5>Customers Details</h5>
@@ -15,7 +37,7 @@
     </thead>
     <tbody>
 
-      <tr v-for="(customer,index) in list" :key="customer.id">
+      <tr v-for="(customer,index) in filteredList" :key="customer.id">
         <td>{{ index+1 }}</td>
         <td>{{ customer.name }}</td>
         <td>{{ customer.phone_no }}</td>
@@ -73,7 +95,9 @@ export default {
    data(){
     return{
         list:[],
-        selectedCustomer: null
+        selectedCustomer: null,
+        searchQuery: '',
+        filteredList: [],
 
     }
    },
@@ -87,9 +111,18 @@ export default {
     formatMemberSinceDate(date) {
       return moment(date).format('DD/MM/YYYY');
     },
+    search() {
+      this.filteredList = this.list.filter((customer) =>
+        customer.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+        customer.phone_no.includes(this.searchQuery)
+      );
+    },
     getData(){
         axios.get('/api/customer').then(res=>{
-            this.list=res.data
+            this.list=res.data,
+            this.filteredList = res.data;
+
+
         }) .catch(error => {
           console.error('Error fetching data', error);
         });;
