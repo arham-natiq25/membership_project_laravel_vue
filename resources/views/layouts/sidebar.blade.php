@@ -63,6 +63,30 @@
             </a>
           </li>
           <li class="nav-item">
+            <a href="{{route('trip')}}" class="nav-link">
+                <i class="fas fa-plane-departure nav-icon"></i>
+              <p>
+                Trips
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('location')}}" class="nav-link">
+                <i class="fas fa-map-marker-alt nav-icon"></i>
+                <p>
+                Locations
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('route')}}" class="nav-link">
+                <i class="fas fa-route nav-icon"></i>
+                  <p>
+                Routes
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="../gallery.html" class="nav-link">
               <i class="nav-icon far fa-image"></i>
               <p>

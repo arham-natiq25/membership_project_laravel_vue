@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Backend\CustomerDetailsController;
+use App\Http\Controllers\Backend\LocationDetailsController;
 use App\Http\Controllers\Backend\MemberController;
 use App\Http\Controllers\Backend\MembershipController;
+use App\Http\Controllers\Backend\RouteDetailsController;
+use App\Http\Controllers\Backend\TripDetailsController;
 use App\Http\Controllers\Backend\UsersData;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
@@ -18,7 +21,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::resource('/users',UsersData::class);
+
+Route::resource('/routes',RouteDetailsController::class);
+Route::resource('/locations',LocationDetailsController::class);
+Route::resource('/trips',TripDetailsController::class);
 Route::resource('/customer',CustomerDetailsController::class);
 Route::post('/process-payment', [PaymentController::class,'processPayment']);
 Route::resource('/membership',MembershipController::class);

@@ -1,16 +1,17 @@
 @extends('layouts.master')
-@section('title')
-    Dashboard
-@endsection
-@section('content')
 
+@section('title')
+    Routes
+@endsection
+
+@section('content')
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Dashboard </h1>
+            <h1>Routes </h1>
           </div>
         </div>
       </div><!-- /.container-fluid -->
@@ -25,7 +26,7 @@
             <div class="card-title"> Hello , <span class="text-primary">{{Auth()->user() ->name}}</span></div>
         </div>
         <div class="card-body">
-           <welcome/> <br>
+           <route/> <br>
 
         </div>
         <!-- /.card-body -->

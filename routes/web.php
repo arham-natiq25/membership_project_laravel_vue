@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Backend\CustomerController;
+use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\MembershipHomeController;
+use App\Http\Controllers\Backend\RoutesController;
+use App\Http\Controllers\Backend\TripController;
 use App\Http\Controllers\Payment\newPaymentController as ControllersNewPaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -23,9 +26,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('frontend.index');
 });
-
+// membership home page
 Route::get('/membership',MembershipHomeController::class)->name('membership');
+// customer home page
 Route::get('/customer',CustomerController::class)->name('customer');
+//trip home page
+Route::get('/trips',TripController::class)->name('trip');
+// locarion home page
+Route::get('/location',LocationController::class)->name('location');
+// route home page
+Route::get('/routes',RoutesController::class)->name('route');
+// dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
