@@ -37,17 +37,40 @@ class RouteDetailsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title'=>'required',
-            'short_description'=>'required',
-            'long_description'=>'required',
-            'locations_id'=>'required'
+            'route.title' => 'required',
+            'route.short_description' => 'required',
+            'route.long_description' => 'required',
+            'addedLocations' => 'required|array|min:1',
         ]);
-        $loc_id = json_encode($request->locations_id);
+        $routeData = $request->input('route');
+        $addedLocations = $request->input('addedLocations');
+
+
+        $locationIds = [];
+        foreach ($addedLocations as $locationData) {
+         $location = new Location();
+        $location->name = $locationData['name'];
+        $location->map_link = $locationData['map_link'];
+        $location->depart_time = $locationData['depart_time'];
+        $location->return_time = $locationData['return_time'];
+        $location->address = $locationData['address'];
+        $location->description = $locationData['description'];
+        $location->save();
+
+        $locationIds[] = $location->id;
+    }
+        // $request->validate([
+        //     'title'=>'required',
+        //     'short_description'=>'required',
+        //     'long_description'=>'required',
+        //     'locations_id'=>'required'
+        // ]);
+        $loc_ids=json_encode($locationIds);
         $route = Route::create([
-            "title"=>$request->title,
-            "short_description"=>$request->short_description,
-            "long_description"=>$request->long_description,
-            "locations_id"=>$loc_id
+            "title"=>$routeData['title'],
+            "short_description"=>$routeData['short_description'],
+            "long_description"=>$routeData['long_description'],
+            "locations_id"=>$loc_ids
         ]);
         return response()->json([
             'message'=>'Route created successfully',
@@ -77,23 +100,21 @@ class RouteDetailsController extends Controller
      */
     public function update(Request $request,$id)
     {
+        $routeData = $request->input('route');
         $request->validate([
-            'title'=>'required',
-            'short_description'=>'required',
-            'long_description'=>'required',
-            'locations_id'=>'required'
+            'route.title' => 'required',
+            'route.short_description' => 'required',
+            'route.long_description' => 'required',
         ]);
         $route = Route::find($id);
 
         if (!$route) {
             return response()->json(['message' => 'Route not found'], 404);
         }
-        $loc_id = json_encode($request->locations_id);
         $route->update([
-            "title" => $request->title,
-            "short_description" => $request->short_description,
-            "long_description" => $request->long_description,
-            "locations_id" => $loc_id
+            "title" => $routeData['title'],
+            "short_description" =>$routeData['short_description'],
+            "long_description" => $routeData['long_description'],
         ]);
 
         return response()->json([
