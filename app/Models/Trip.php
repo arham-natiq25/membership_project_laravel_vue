@@ -17,6 +17,12 @@ class Trip extends Model
         'close_trip_booking',
         'auto_activation_date',
         'status',
-        'night'
+        'night',
+        'route_id'
     ];
+
+    public function route()
+    {
+        return $this->belongsTo(Route::class, 'route_id');
+    }
 }

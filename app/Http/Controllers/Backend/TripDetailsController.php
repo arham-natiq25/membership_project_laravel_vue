@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Route;
 use App\Models\Trip;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TripDetailsController extends Controller
 {
@@ -13,8 +15,10 @@ class TripDetailsController extends Controller
      */
     public function index()
     {
-        $trips = Trip::all();
-        return $trips;
+
+    $trips = Trip::with('route')->get();
+
+    return response()->json($trips);
     }
 
     /**
@@ -36,7 +40,8 @@ class TripDetailsController extends Controller
             'booking_close_date'=>'required',
             'price'=>'required|numeric',
             'close_trip_booking'=>'required',
-            'auto_activation_date'=>'required'
+            'auto_activation_date'=>'required',
+            'route_id'=>'required'
 
         ]);
         $trip = Trip::create($request->post());
@@ -73,7 +78,7 @@ class TripDetailsController extends Controller
             'booking_close_date'=>'required',
             'price'=>'required|numeric',
             'close_trip_booking'=>'required',
-            'auto_activation_date'=>'required'
+            'auto_activation_date'=>'required',
 
         ]);
         $trip->fill($request->post())->save();
