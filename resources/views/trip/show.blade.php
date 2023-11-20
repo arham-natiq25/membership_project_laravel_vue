@@ -1,9 +1,8 @@
 @extends('layouts.master')
 
 @section('title')
-    Trips
+    Trip Data
 @endsection
-
 @section('content')
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -25,7 +24,7 @@
         <div class="card-header">
         </div>
         <div class="card-body">
-            <trip/>
+            hello
             <br>
 
         </div>

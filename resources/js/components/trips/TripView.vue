@@ -47,7 +47,7 @@
                             <th scope="col" style="width: 40%">Trip Name</th>
                             <th scope="col">Route</th>
 
-                            <th scope="col" style="width: 10%">Action</th>
+                            <th scope="col" style="width: 13%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,8 +56,14 @@
                             <td>{{ data.trip_name }}</td>
                             <td>{{ data.route.title }}</td>
                             <td>
-                                <i class="far fa-eye btn btn-primary text-white btn-sm"
-                                    @click="viewInfo(data)"></i>
+                               <!-- <a :href="``"> -->
+                                   <i class="far fa-eye btn btn-primary text-white btn-sm"
+                                   @click="viewInfo(data)"></i>
+                                <!-- </a> -->
+                                <i
+                                class="fas fa-trash-alt btn btn-danger text-white btn-sm mx-2"
+                                @click="deleteTrip(data.id)"
+                                ></i>
                             </td>
                         </tr>
                     </tbody>
@@ -199,10 +205,10 @@ export default {
       .then(response => {
         this.getTrips();
         this.message=response.data.message;
-
-        // setTimeout(() => {
-        //     this.message=""
-        // }, 50000);
+        setTimeout(() => {
+            this.message=""
+            window.location.href = "/trip-view";
+        }, 5000);
         console.log('Seats updated successfully:', response.data);
         // Close the modal after updating seats
         this.closeModal();
@@ -258,7 +264,36 @@ export default {
             this.showTripInfo=false,
             this.showTrips=true
             this.getData=[]
+        },
+        async deleteTrip(id) {
+      try {
+        // on click a popup shows of sweet alert
+        const confirmed = await Swal.fire({
+          title: "Are you sure?",
+          text: "You will not be able to recover this membership!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+        });
+
+        // if click on yes ... request using axios and deleted and show message ..
+        if (confirmed.isConfirmed) {
+          await axios.delete(`/api/trips/${id}`);
+          this.getTrips();
+          Swal.fire("Deleted!", "Your trip has been deleted.", "success");
         }
+        // if getting any error in deleting
+      } catch (error) {
+        console.error(error);
+        Swal.fire(
+          "Error",
+          "An error occurred while deleting the trip.",
+          "error"
+        );
+      }
+    },
     },
 };
 </script>

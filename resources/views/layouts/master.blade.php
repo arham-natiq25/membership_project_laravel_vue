@@ -33,8 +33,10 @@
     {{-- toastr css  --}}
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-
-
+<!-- Daterange picker -->
+        <link rel="stylesheet" href="{{ asset('backend/plugins/daterangepicker/daterangepicker.css') }}">
+        <!-- Tempusdominus Bootstrap 4 -->
+        <link rel="stylesheet" href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -110,6 +112,37 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     {{-- sweet alert  --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- daterangepicker -->
+<script src="{{ asset('backend/plugins/moment/moment.min.js') }}"></script>
+<script src="{{ asset('backend/plugins/daterangepicker/daterangepicker.js') }}"></script>
+
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="{{ asset('backend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+<script>
+    $(function () {
+        // Initialize DateTime Picker
+        $('#datetimepicker').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: false,
+            icons: {
+                time: 'far fa-clock',
+                date: 'far fa-calendar',
+                up: 'fas fa-chevron-up',
+                down: 'fas fa-chevron-down',
+                previous: 'fas fa-chevron-left',
+                next: 'fas fa-chevron-right',
+                today: 'fas fa-calendar-day',
+                clear: 'far fa-trash-alt',
+                close: 'fas fa-times'
+            },
+            // Set the placement option to 'left'
+            widgetPositioning: {
+                horizontal: 'left',
+                vertical: 'bottom'
+            }
+        });
+    });
+</script
 
 @stack('scripts')
 
