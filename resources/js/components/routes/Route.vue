@@ -4,7 +4,7 @@
   </div>
   <!-- input starts  -->
   <div v-if="createTripForm">
-    <button class="btn btn-default my-2" @click="showTripRecords">Back</button>
+    <button class="btn btn-default my-2" @click="goback">Back</button>
     <div class="row">
       <div class="col-md-8">
         <div class="form-group">
@@ -246,12 +246,35 @@ export default {
     this.getRoutes();
   },
   methods: {
+    goback(){
+        this.createTripForm = false;
+        this.errors={};
+        this.isEditing = false;
+        this.addedLocations=[];
+        this.temp_id = null;
+        this.locations = {
+          name: "",
+          map_link: "",
+          depart_time: "",
+          return_time: "",
+          address: "",
+          description: "",
+        };
+        this.routes= {
+        title:"",
+        short_description: "",
+        long_description: "",
+        };
+    },
     showTripform() {
       this.createTripForm = true;
+
     },
     showTripRecords() {
       this.createTripForm = false,
       this.getTrips();
+
+
     },
     addLocation() {
       // Validate the location data before adding it to the list
@@ -310,6 +333,7 @@ export default {
               short_description: "",
               long_description: "",
             }),
+            this.addedLocations=[];
               (this.createTripForm = false);
             this.successMessage = res.data.message;
             this.isEditing = false;

@@ -35,7 +35,7 @@ class RouteDetailsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+{
         $request->validate([
             'route.title' => 'required',
             'route.short_description' => 'required',
@@ -59,12 +59,7 @@ class RouteDetailsController extends Controller
 
         $locationIds[] = $location->id;
     }
-        // $request->validate([
-        //     'title'=>'required',
-        //     'short_description'=>'required',
-        //     'long_description'=>'required',
-        //     'locations_id'=>'required'
-        // ]);
+
         $loc_ids=json_encode($locationIds);
         $route = Route::create([
             "title"=>$routeData['title'],
@@ -72,12 +67,19 @@ class RouteDetailsController extends Controller
             "long_description"=>$routeData['long_description'],
             "locations_id"=>$loc_ids
         ]);
+
+        foreach ($locationIds as $locationId) {
+            $location = Location::find($locationId);
+            $location->route_id = $route->id;
+            $location->save();
+        }
+
         return response()->json([
             'message'=>'Route created successfully',
             'route'=>$route
         ]);
 
-    }
+}
 
     /**
      * Display the specified resource.

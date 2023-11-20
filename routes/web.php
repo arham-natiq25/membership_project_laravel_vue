@@ -5,6 +5,7 @@ use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\MembershipHomeController;
 use App\Http\Controllers\Backend\RoutesController;
 use App\Http\Controllers\Backend\TripController;
+use App\Http\Controllers\Backend\TripViewController;
 use App\Http\Controllers\Payment\newPaymentController as ControllersNewPaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('frontend.index');
 });
+//
+Route::get('/trip-view',TripViewController::class)->name('trip-view');
 // membership home page
 Route::get('/membership',MembershipHomeController::class)->name('membership');
 // customer home page

@@ -15,6 +15,10 @@ class Location extends Model
         'depart_time',
         'return_time',
         'address',
-        'description'
+        'description',
+        'route_id',
+        'total_seats',
+        'avaliable_seats',
+        'sold_seats'
     ];
 }

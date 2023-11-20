@@ -16,7 +16,7 @@ class TripDetailsController extends Controller
     public function index()
     {
 
-    $trips = Trip::with('route')->get();
+    $trips = Trip::with('route.locations')->get();
 
     return response()->json($trips);
     }

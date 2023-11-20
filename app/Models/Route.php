@@ -18,4 +18,8 @@ class Route extends Model
     protected $casts = [
         'locations_id' => 'array',
     ];
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
+    }
 }

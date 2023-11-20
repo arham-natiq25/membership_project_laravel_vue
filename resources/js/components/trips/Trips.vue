@@ -146,9 +146,7 @@
                           {{ route.title }}
                 </option>
           </select>
-          <span v-if="errors.route_id" class="text-danger">{{
-            errors.route_id[0]
-          }}</span>
+          <span v-if="errors.route_id" class="text-danger">Please Select Your Route</span>
         </div>
       </div>
     </div>
@@ -241,7 +239,22 @@ export default {
       this.createTripForm = true;
     },
     showTripRecords() {
-      (this.createTripForm = false), this.getTrips();
+      (this.createTripForm = false),
+      this.getTrips();
+      this.errors={};
+      this.items={
+              trip_name: "",
+              trip_date: "",
+              booking_close_date: "",
+              price: "",
+              close_trip_booking: "",
+              auto_activation_date: "",
+              status: "",
+              night: "",
+              route_id:""
+      };
+      this.isEditing = false;
+      this.temp_id = null;
     },
     getTrips() {
       axios.get("/api/trips").then((res) => {

@@ -11,6 +11,9 @@
       <li class="nav-item">
         <a href="#" class="nav-link">Contact</a>
       </li>
+      <li class="nav-item">
+        <a href="{{route('trip-view')}}" class="nav-link">Trip View</a>
+      </li>
     </ul>
 
   </nav>
