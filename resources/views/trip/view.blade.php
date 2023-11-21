@@ -23,7 +23,6 @@
       <!-- Default box -->
       <div class="card">
         <div class="card-header">
-            <div class="card-title"> Hello , <span class="text-primary">{{Auth()->user() ->name}}</span></div>
         </div>
         <div class="card-body">
            <trip-view/>

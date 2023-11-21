@@ -18,10 +18,13 @@
     "dependencies": {
         "@stripe/stripe-js": "^2.1.11",
         "@vitejs/plugin-vue": "^4.4.0",
+        "flatpickr": "^4.6.13",
         "modal": "^1.2.0",
         "moment": "^2.29.4",
         "vue": "^3.2.36",
         "vue-axios": "^3.5.2",
-        "vue-router": "^4.2.5"
+        "vue-flatpickr-component": "^11.0.3",
+        "vue-router": "^4.2.5",
+        "vuejs-datetimepicker": "^1.1.13"
     }
 }

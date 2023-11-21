@@ -119,30 +119,8 @@
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('backend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 <script>
-    $(function () {
-        // Initialize DateTime Picker
-        $('#datetimepicker').datetimepicker({
-            format: 'YYYY-MM-DD HH:mm:ss',
-            useCurrent: false,
-            icons: {
-                time: 'far fa-clock',
-                date: 'far fa-calendar',
-                up: 'fas fa-chevron-up',
-                down: 'fas fa-chevron-down',
-                previous: 'fas fa-chevron-left',
-                next: 'fas fa-chevron-right',
-                today: 'fas fa-calendar-day',
-                clear: 'far fa-trash-alt',
-                close: 'fas fa-times'
-            },
-            // Set the placement option to 'left'
-            widgetPositioning: {
-                horizontal: 'left',
-                vertical: 'bottom'
-            }
-        });
-    });
-</script
+
+</script>
 
 @stack('scripts')
 

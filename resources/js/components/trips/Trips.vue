@@ -22,65 +22,55 @@
           }}</span>
         </div>
       </div>
+      <div>
+</div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+    <div class="form-group">
+      <label for="trip_date">Enter Trip Date</label>
+      <div class="input-group">
+        <flat-pickr class="form-control" :config="config" id="trip_date" name="trip_date" v-model="items.trip_date"></flat-pickr>
     </div>
-    <div class="row">
+    <span v-if="errors.trip_date" class="text-danger">{{ errors.trip_date[0] }}</span>
+    </div>
+</div>
       <div class="col-md-4">
         <div class="form-group">
-          <label for="trip_date">Enter Trip Date</label>
-          <input
-            type="datetime-local"
-            class="form-control"
-            id="trip_date"
-            name="trip_date"
-            v-model="items.trip_date"
-          />
-          <span v-if="errors.trip_date" class="text-danger">{{
-            errors.trip_date[0]
-          }}</span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="booking_date">Booking Close Date</label>
-          <input
-            type="datetime-local"
-            class="form-control"
+            <label for="booking_date">Booking Close Date</label>
+            <flat-pickr class="form-control" :config="config"
             id="booking_date"
             name="booking_date"
-            v-model="items.booking_close_date"
-          />
-          <span v-if="errors.booking_close_date" class="text-danger">{{
-            errors.booking_close_date[0]
-          }}</span>
+            v-model="items.booking_close_date"></flat-pickr>
+            <span v-if="errors.booking_close_date" class="text-danger">{{
+                errors.booking_close_date[0]
+            }}</span>
         </div>
-      </div>
     </div>
-    <div class="row">
-      <div class="col-md-4">
+</div>
+<div class="row">
+    <div class="col-md-4">
         <div class="form-group">
-          <label for="price">Price</label>
-          <input
+            <label for="price">Price</label>
+            <input
             type="text"
             class="form-control"
             v-model="items.price"
             id="price"
             name="price"
-          />
-          <span v-if="errors.price" class="text-danger">{{
-            errors.price[0]
-          }}</span>
+            />
+            <span v-if="errors.price" class="text-danger">{{
+                errors.price[0]
+            }}</span>
         </div>
-      </div>
-      <div class="col-md-4">
+    </div>
+    <div class="col-md-4">
         <div class="form-group">
-          <label for="close_trip_date">Close Trip Date</label>
-          <input
-            type="datetime-local"
-            class="form-control"
+            <label for="close_trip_date">Close Trip Date</label>
+            <flat-pickr class="form-control" :config="config"
             id="close_trip_date"
             name="close_trip_date"
-            v-model="items.close_trip_booking"
-          />
+            v-model="items.close_trip_booking"></flat-pickr>
           <span v-if="errors.close_trip_booking" class="text-danger">{{
             errors.close_trip_booking[0]
           }}</span>
@@ -91,13 +81,10 @@
       <div class="col-md-4">
         <div class="form-group">
           <label for="auto_activation_date">Auto Activation Date</label>
-          <input
-            type="datetime-local"
-            class="form-control"
-            id="auto_date"
+          <flat-pickr class="form-control" :config="config"
+          id="auto_date"
             name="auto_date"
-            v-model="items.auto_activation_date"
-          />
+            v-model="items.auto_activation_date"></flat-pickr>
           <span v-if="errors.auto_activation_date" class="text-danger">{{
             errors.auto_activation_date[0]
           }}</span>
@@ -206,10 +193,19 @@
 
 <script>
 import axios from "axios";
+import flatPickr from 'vue-flatpickr-component';
+import 'flatpickr/dist/flatpickr.css';
 export default {
   name: "Trips",
+  components: {
+    flatPickr,
+  },
   data() {
     return {
+      config: {
+        enableTime: true, // Enable time selection
+        dateFormat: 'Y-m-d H:i:S', // Format as '2024-08-16 09:12:00'
+      },
       list: [],
       routes: [],
       items: {
