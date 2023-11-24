@@ -6,13 +6,10 @@
         <a class="nav-link" data-widget="pushmenu" href="" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item">
-        <a href="../../index3.html" class="nav-link">Home</a>
+        <a href="{{route('dashboard')}}" class="nav-link">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
-      <li class="nav-item">
-        <a href="{{route('trip-view')}}" class="nav-link">Trips</a>
+        <a href="{{route('trip')}}" class="nav-link">Trips</a>
       </li>
     </ul>
 

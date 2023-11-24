@@ -102,6 +102,7 @@
 <script src="{{ asset('backend/dist/js/adminlte.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{ asset('backend/dist/js/demo.js') }}"></script>
+
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 {{-- <script src="{{ asset('backend/dist/js/pages/dashboard.js') }}"></script> --}}
 {{-- toastr js  --}}
@@ -118,7 +119,13 @@
 
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="{{ asset('backend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+<script src='{{asset("backend/plugins/bootstrap-switch/js/bootstrap-switch.min.js")}}'></script>
 <script>
+ $(function () {
+$("input[data-bootstrap-switch]").each(function(){
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+    })
+ })
 
 </script>
 

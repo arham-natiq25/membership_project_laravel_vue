@@ -2,6 +2,37 @@
     <div v-if="successMessage" class="alert alert-success">
         {{ successMessage }}
     </div>
+    <div v-if="showModal">
+        <div class="modal fade show" style="display: block">
+            <div class="modal-dialog">
+                <div class="modal-content bg-light">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Seats for Location</h4>
+                        <button type="button" class="close" @click="closeModal">
+                            &times;
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="seats">Seats</label>
+                                <input type="text" class="form-control" id="seats" name="seats" v-model="seats" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-outline-danger" @click="closeModal">
+                            Close
+                        </button>
+                        <button type="button" class="btn btn-outline-dark" @click="updateSeats">
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    </div>
     <!-- Form where take input  -->
     <div v-if="createTripForm">
         <button class="btn btn-default my-2" @click="showTripRecords">Back</button>
@@ -116,41 +147,211 @@
 
     <!-- All Details section  -->
 
-    <div v-else class="row m-2">
+    <div v-if="allTrips" class="row m-2">
         <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-between">
-                <h5>All Trips</h5>
-                <button class="btn btn-primary" @click="showTripform">Create</button>
+            <button class="btn btn-primary" @click="showTripform">Create</button>
+            <button class="btn btn-warning mx-2">Buy a Trip</button>
+            <!-- <div class="card card-secondary">
+              <div class="card-header">
+                <h3 class="card-title">Bootstrap Switch</h3>
+              </div>
+              <div class="card-body">
+                <input type="checkbox" name="my-checkbox" checked data-bootstrap-switch>
+                <input type="checkbox" name="my-checkbox" checked data-bootstrap-switch data-off-color="danger" data-on-color="success">
+              </div>
+                </div> -->
+            <div class="col-md-12 mt-2">
+                <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                    <li class="nav-item ">
+                        <a class="nav-link active" id="allTrips" data-toggle="pill" href="#custom-tabs-two-home" role="tab"
+                            aria-controls="custom-tabs-two-home" aria-selected="true">All Trips</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="archiveTrips" data-toggle="pill" href="#custom-tabs-two-profile" role="tab"
+                            aria-controls="custom-tabs-two-profile" aria-selected="false">Archievd</a>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-two-tabContent">
+                        <div class="tab-pane fade show active" id="custom-tabs-two-home" role="tabpanel"
+                            aria-labelledby="allTrips">
+                            <div class="col-md-12 mt-2">
+                                <div class="table-responsive">
+                                    <table class="table table-secondary table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col" style="width: 40%">Trip Name</th>
+                                                <th scope="col">Route</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data, index) in activeTrips" :key="data.id">
+                                                <td scope="row">{{ index + 1 }}</td>
+                                                <td>{{ data.trip_name }}</td>
+                                                <td>{{ data.route.title }}</td>
+                                                <td>${{ formatPrice(data.price) }}</td>
+                                                <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
+                                                <td>
+                                                    <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
+                                                        @click="deleteTrip(data.id)"></i>
+                                                    <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
+                                                        @click="editTrip(data)"></i>
+                                                    <i class="far fa-eye btn btn-primary text-white btn-sm"
+                                                        @click="viewInfo(data)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel"
+                            aria-labelledby="archiveTrips">
+                            <div class="col-md-12 mt-2">
+                                <div class="table-responsive">
+                                    <table class="table table-secondary table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col" style="width: 40%">Trip Name</th>
+                                                <th scope="col">Route</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(data, index) in archivedTrips" :key="data.id">
+                                                <td scope="row">{{ index + 1 }}</td>
+                                                <td>{{ data.trip_name }}</td>
+                                                <td>{{ data.route.title }}</td>
+                                                <td>${{ formatPrice(data.price) }}</td>
+                                                <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
+                                                <td>
+                                                    <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
+                                                        @click="deleteTrip(data.id)"></i>
+                                                    <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
+                                                        @click="editTrip(data)"></i>
+                                                    <i class="far fa-eye btn btn-primary text-white btn-sm"
+                                                        @click="viewInfo(data)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
             </div>
         </div>
-        <div class="col-md-12 mt-2">
-            <div class="table-responsive">
-                <table class="table table-secondary table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col" style="width: 40%">Trip Name</th>
-                            <th scope="col">Route</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(data, index) in list" :key="data.id">
-                            <td scope="row">{{ index + 1 }}</td>
-                            <td>{{ data.trip_name }}</td>
-                            <td>{{ data.route.title }}</td>
-                            <td>${{ data.price }}</td>
-                            <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
-                            <td>
-                                <i class="fas fa-trash-alt btn btn-danger text-white btn-sm mx-2"
-                                    @click="deleteTrip(data.id)"></i>
-                                <i class="far fa-edit btn btn-primary text-white btn-sm" @click="editTrip(data)"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    </div>
+    <div v-if="showTripInfo">
+        <h4>View Trip</h4>
+        <br />
+        <button class="btn btn-default my-3" @click="goBack">Back</button>
+        <div class="row">
+            <div class="col-2 fw-bold">
+                <label for=""> Trip Info </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">{{ formatDateString(getData.trip_date) ?? "" }}</div>
+            <div class="col-md-3">{{ getDayOfWeek(getData.trip_date) }}</div>
+            <div class="col-md-3">Alpine</div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12">
+                <label for="">Last Date of Booking : </label>
+                <span class="col-4">{{
+                    formatDateTime(getData.booking_close_date)
+                }}</span>
+            </div>
+            <div class="col-12">
+                <label for="">Price : </label> <span> ${{ getData.price }}</span>
+            </div>
+            <div class="col-12">
+                <label for="">Price Stuff kid : </label> <span>$0.00</span>
+            </div>
+            <div class="col-12">
+                <label for="">Price Junior Instructor : </label> <span>$0.00</span>
+            </div>
+            <button class="btn btn-secondary">Close Booking</button>
+        </div>
+        <hr />
+        <button class="btn btn-warning">Trip Members</button>
+        <div class="row mt-3">
+            <div class="col-4">
+                <label for="">Total Trips limit </label>
+            </div>
+            <div class="col-4">42</div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <label for=""> Trips Sold </label>
+            </div>
+            <div class="col-4">10</div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <label for=""> Trips Avaliable </label>
+            </div>
+            <div class="col-4">1</div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <label for=""> AM-ON-BUS </label>
+            </div>
+            <div class="col-4">5</div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <label for=""> PM-RETURN </label>
+            </div>
+            <div class="col-4">6</div>
+        </div>
+        <hr />
+        <div class="row mt-4">
+            <label for="">Bus Stop Sales</label>
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-primary table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Location Bus stop Name</th>
+                                <th scope="col">Seat / Avaliable / Sold</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="location in getData.route.locations" :key="location.id">
+                                <td scope="row">{{ location.name }}</td>
+                                <td>
+                                    {{ location.total_seats ?? 0 }} /
+                                    {{ location.avaliable_seats ?? 0 }} /
+                                    {{ location.sold_seats ?? 0 }}
+                                </td>
+                                <td>
+                                    <button class="btn btn-secondary btn-sm" @click="openEditSeatsModal(location)">
+                                        Edit Seats
+                                    </button>
+                                    <button class="btn btn-primary btn-sm">
+                                        Location Members
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        Excel to export
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -164,6 +365,7 @@ export default {
     name: "Trips",
     components: {
         flatPickr,
+
     },
     data() {
         return {
@@ -185,23 +387,70 @@ export default {
                 night: false,
                 route_id: "",
             },
+            getData: [],
             errors: {},
             successMessage: "",
             isEditing: false,
             temp_id: null,
             createTripForm: false,
             allTrips: true,
+            selectedLocation: null,
+            showTripInfo: false,
+            showModal: false,
+            seats: "",
         };
     },
     mounted() {
         this.getTrips(), this.getRoutes();
     },
+    computed: {
+        activeTrips() {
+            return this.list.filter(data => this.isTripActive(data.trip_date));
+        },
+        archivedTrips() {
+            return this.list.filter(data => !this.isTripActive(data.trip_date));
+        },
+    },
     methods: {
+        isTripActive(tripDate) {
+            const today = new Date();
+            const tripDateTime = new Date(tripDate);
+            // Compare the dates without considering the time
+            today.setHours(0, 0, 0, 0);
+            tripDateTime.setHours(0, 0, 0, 0);
+
+
+            return tripDateTime >= today;
+        },
+        goBack() {
+            (this.showTripInfo = false),
+                // this.showTrips=true
+                (this.getData = []);
+            this.allTrips = true;
+        },
+
+        viewInfo(data) {
+            this.getData = data;
+            (this.showTripInfo = true),
+                (this.showTrips = false),
+                (this.allTrips = false);
+        },
+        openEditSeatsModal(location) {
+            this.selectedLocation = location;
+            this.showModal = true;
+        },
+        closeModal() {
+            this.showModal = false;
+            this.selectedLocation = null;
+            this.seats = "";
+        },
         showTripform() {
             this.createTripForm = true;
+            this.allTrips = false;
         },
         showTripRecords() {
-            (this.createTripForm = false), this.getTrips();
+            (this.createTripForm = false), (this.allTrips = true);
+            this.getTrips();
             this.errors = {};
             this.items = {
                 trip_name: "",
@@ -216,6 +465,9 @@ export default {
             };
             this.isEditing = false;
             this.temp_id = null;
+        },
+        formatPrice(price) {
+            return `${price.toFixed(2)}`;
         },
         getTrips() {
             axios.get("/api/trips").then((res) => {
@@ -254,6 +506,7 @@ export default {
                         }),
                             (this.createTripForm = false);
                         this.successMessage = res.data.message;
+                        this.allTrips = true;
                         this.isEditing = false;
                         this.temp_id = null;
                         this.errors = {};
@@ -289,6 +542,7 @@ export default {
             (this.temp_id = data.id),
                 (this.isEditing = true),
                 (this.createTripForm = true);
+            this.allTrips = false;
         },
 
         async deleteTrip(id) {
@@ -319,6 +573,64 @@ export default {
                     "error"
                 );
             }
+        },
+        updateSeats() {
+            axios
+                .post("/api/updateSeats", {
+                    seats: this.seats,
+                    location: this.selectedLocation,
+                })
+                .then((response) => {
+                    this.getTrips();
+                    window.location.href = "/trips";
+                    console.log("Seats updated successfully:", response.data);
+                    // Close the modal after updating seats
+                    this.closeModal();
+                })
+                .catch((error) => {
+                    console.error("Error updating seats:", error);
+                });
+        },
+        formatDateString(dateString) {
+            if (dateString) {
+                const date = new Date(dateString);
+                const options = { year: "numeric", month: "long", day: "numeric" };
+                return date.toLocaleDateString("en-US", options);
+            }
+            return "";
+        },
+        getDayOfWeek(dateString) {
+            if (dateString) {
+                const daysOfWeek = [
+                    "Sunday",
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                    "Saturday",
+                ];
+                const date = new Date(dateString);
+                const dayIndex = date.getDay();
+                return daysOfWeek[dayIndex];
+            }
+            return "";
+        },
+        formatDateTime(dateString) {
+            if (dateString) {
+                const date = new Date(dateString);
+                const options = {
+                    year: "2-digit",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                };
+                return date
+                    .toLocaleDateString("en-US", options)
+                    .replace(/(\d+)\/(\d+)\/(\d+),/, "$2-$1-$3");
+            }
+            return "";
         },
     },
 };
