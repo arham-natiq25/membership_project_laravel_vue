@@ -149,8 +149,8 @@
 
     <div v-if="allTrips" class="row m-2">
         <div class="col-md-12">
-            <button class="btn btn-primary" @click="showTripform">Create</button>
-            <button class="btn btn-warning mx-2">Buy a Trip</button>
+            <button class="btn btn-primary mx-2" @click="showTripform">Create</button>
+           <BuyTrip></BuyTrip>
             <!-- <div class="card card-secondary">
               <div class="card-header">
                 <h3 class="card-title">Bootstrap Switch</h3>
@@ -361,10 +361,12 @@
 import axios from "axios";
 import flatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import BuyTrip from "./BuyTrip.vue";
 export default {
     name: "Trips",
     components: {
         flatPickr,
+        BuyTrip
 
     },
     data() {
@@ -550,7 +552,7 @@ export default {
                 // on click a popup shows of sweet alert
                 const confirmed = await Swal.fire({
                     title: "Are you sure?",
-                    text: "You will not be able to recover this membership!",
+                    text: "You will not be able to recover this trip!",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#d33",
