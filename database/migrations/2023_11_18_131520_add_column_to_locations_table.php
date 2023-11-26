@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('locations', function (Blueprint $table) {
             $table->integer('total_seats')->nullable();
-            $table->integer('avaliable_seats')->nullable();
-            $table->integer('sold_seats')->nullable();
+            $table->integer('avaliable_seats')->default(0);
+            $table->integer('sold_seats')->default(0);
         });
     }
 

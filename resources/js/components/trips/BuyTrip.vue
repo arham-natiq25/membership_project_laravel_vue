@@ -65,6 +65,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
+                            <div v-if="message" class="alert alert-success">
+                            {{ message }}
+                            </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="routes">Select Members</label>
@@ -127,7 +130,8 @@ export default ({
             selectedTrip: [],
             selectedCustomer: [],
             selectedMembers: [],
-            message:""
+            message:"",
+            error:{},
         };
     },
     mounted() {
@@ -137,15 +141,55 @@ export default ({
     methods: {
 
         saveMembersTrips() {
-        const payload = {
-            loc_id: this.selectedLocation ,
-            trip_id: this.selectedTrip.id ,
-            member: { ...this.selectedMembers }
-        };
-        axios.post('/api/savetrip', payload).then((res) => {
-            this.message = res.data.message;
+        if(this.selectedMembers.length===0 || this.selectedLocation.length===0){
+            Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Please select Atleast one Member and Location",
+                });
+        }
+        else{
+
+            const payload = {
+                loc_id: this.selectedLocation ,
+                trip_id: this.selectedTrip.id ,
+                member: { ...this.selectedMembers }
+            };
+            axios.post('/api/savetrip', payload)
+    .then((res) => {
+        this.message = res.data.message;
+        this.error = {};  // Clear any previous error messages
+        this.selectedCustomer = [];
+        this.selectedMembers = [];
+        this.selectedLocation = [];
+        this.selectedTrip = [];
+        this.showModalTwo = false;  // Close the second modal
+
+        // Optionally, you can show a success notification here
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: res.data.message,
         });
-},
+    })
+    .catch(error => {
+        if (error.response && error.response.data) {
+            const { data } = error.response;
+            if (data.error) {
+                this.error = data.error;
+            }
+        }
+
+        // Optionally, you can show an error notification here
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: this.error,
+        });
+    });
+
+        }
+        },
 
         getTrips() {
             axios.get('/api/trips').then((res) => {
@@ -174,13 +218,15 @@ export default ({
         closeModal() {
             this.showModal = false;
             this.selectedCustomer = [],
-                this.selectedTrip = []
+             this.selectedTrip = []
         },
         closeModalTwo() {
             this.showModalTwo = false;
             this.showModal = true
             this.selectedMembers = [],
-                this.selectedLocation = []
+            this.selectedLocation = [],
+            this.error={},
+            this.message=""
         },
         onNext() {
             if (this.selectedTrip.length == 0 || this.selectedCustomer.length == 0) {
