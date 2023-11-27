@@ -32,7 +32,7 @@ class TripMembersController extends Controller
                 ]);
 
                 $location->sold_seats = $location->sold_seats+1;
-                $location->avaliable_seats = $location->total_seats - $location->sold_seats;
+                $location->avaliable_seats = $location->avaliable_seats - $location->sold_seats;
                 $location->save();
             }
         }

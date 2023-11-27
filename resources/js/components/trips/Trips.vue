@@ -150,7 +150,7 @@
     <div v-if="allTrips" class="row m-2">
         <div class="col-md-12">
             <button class="btn btn-primary mx-2" @click="showTripform">Create</button>
-           <BuyTrip></BuyTrip>
+            <BuyTrip></BuyTrip>
             <!-- <div class="card card-secondary">
               <div class="card-header">
                 <h3 class="card-title">Bootstrap Switch</h3>
@@ -289,20 +289,20 @@
             <div class="col-4">
                 <label for="">Total Trips limit </label>
             </div>
-            <div class="col-4">42</div>
+            <div class="col-4">{{ totalSeats }}</div>
         </div>
         <div class="row">
             <div class="col-4">
                 <label for=""> Trips Sold </label>
             </div>
-            <div class="col-4">10</div>
+            <div class="col-4">{{ totalSoldSeats }}</div>
         </div>
 
         <div class="row">
             <div class="col-4">
                 <label for=""> Trips Avaliable </label>
             </div>
-            <div class="col-4">1</div>
+            <div class="col-4">{{ totalAvailableSeats }}</div>
         </div>
         <div class="row">
             <div class="col-4">
@@ -412,6 +412,50 @@ export default {
         archivedTrips() {
             return this.list.filter(data => !this.isTripActive(data.trip_date));
         },
+        totalSeats() {
+            let total = 0;
+
+            // Check if the route and locations are available in the trip data
+            if (this.getData.route && this.getData.route.locations) {
+                const locations = this.getData.route.locations;
+
+                // Use a for loop to iterate over each location
+                for (let i = 0; i < locations.length; i++) {
+                    // Add the total seats for the current location to the total
+                    total += locations[i].total_seats || 0;
+                }
+            }
+
+            // Return the total seats
+            return total;
+        },
+        totalAvailableSeats() {
+        let total = 0;
+
+        if (this.getData.route && this.getData.route.locations) {
+            const locations = this.getData.route.locations;
+
+            for (let i = 0; i < locations.length; i++) {
+            total += locations[i].avaliable_seats || 0;
+            }
+        }
+
+        return total;
+        },
+        totalSoldSeats() {
+        let total = 0;
+
+        if (this.getData.route && this.getData.route.locations) {
+            const locations = this.getData.route.locations;
+
+            for (let i = 0; i < locations.length; i++) {
+            total += locations[i].sold_seats || 0;
+            }
+        }
+
+        return total;
+        }
+
     },
     methods: {
         isTripActive(tripDate) {

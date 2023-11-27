@@ -18,7 +18,8 @@ class SeatsUpdateController extends Controller
         $location = Location::find($updatedLocation['id']);
         if ($location) {
             $location->total_seats =$seats;
-            $location->save();
+            $location->avaliable_seats = $seats - $location->sold_seats;
+           $location->save();
 
             return response()->json(['message' => 'Seats updated successfully', 'updatedLocation' => $location]);
         } else {
