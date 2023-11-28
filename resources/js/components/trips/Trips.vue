@@ -284,7 +284,7 @@
             <button class="btn btn-secondary">Close Booking</button>
         </div>
         <hr />
-        <button class="btn btn-warning">Trip Members</button>
+        <button class="btn btn-warning" @click="showMembers(getData.id)">Trip Members</button>
         <div class="row mt-3">
             <div class="col-4">
                 <label for="">Total Trips limit </label>
@@ -355,6 +355,36 @@
             </div>
         </div>
     </div>
+
+    <!-- // Member Show Area  -->
+    <div v-if="sawMembers">
+
+
+        <div>
+            <button class="btn btn-secondary my-2" @click="backToInfo">Back</button>
+            <h4>Trip Members</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-info table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Date of Birth</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(member, index) in selectedMembers" :key="index">
+                        <td scope="row">{{ index + 1 }}</td>
+                        <td>{{ member.first_name }}</td>
+                        <td>{{ member.last_name }}</td>
+                        <td>{{ member.dob }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -388,6 +418,7 @@ export default {
                 status: false,
                 night: false,
                 route_id: "",
+                ViewMembers: false
             },
             getData: [],
             errors: {},
@@ -400,10 +431,14 @@ export default {
             showTripInfo: false,
             showModal: false,
             seats: "",
+            tripMembers: [],
+            allMemberrs: [],
+            selectedMembers: [],
+            sawMembers: false
         };
     },
     mounted() {
-        this.getTrips(), this.getRoutes();
+        this.getTrips(), this.getRoutes(), this.getTripMembers(), this.getMembers();
     },
     computed: {
         activeTrips() {
@@ -430,30 +465,30 @@ export default {
             return total;
         },
         totalAvailableSeats() {
-        let total = 0;
+            let total = 0;
 
-        if (this.getData.route && this.getData.route.locations) {
-            const locations = this.getData.route.locations;
+            if (this.getData.route && this.getData.route.locations) {
+                const locations = this.getData.route.locations;
 
-            for (let i = 0; i < locations.length; i++) {
-            total += locations[i].avaliable_seats || 0;
+                for (let i = 0; i < locations.length; i++) {
+                    total += locations[i].avaliable_seats || 0;
+                }
             }
-        }
 
-        return total;
+            return total;
         },
         totalSoldSeats() {
-        let total = 0;
+            let total = 0;
 
-        if (this.getData.route && this.getData.route.locations) {
-            const locations = this.getData.route.locations;
+            if (this.getData.route && this.getData.route.locations) {
+                const locations = this.getData.route.locations;
 
-            for (let i = 0; i < locations.length; i++) {
-            total += locations[i].sold_seats || 0;
+                for (let i = 0; i < locations.length; i++) {
+                    total += locations[i].sold_seats || 0;
+                }
             }
-        }
 
-        return total;
+            return total;
         }
 
     },
@@ -678,6 +713,38 @@ export default {
             }
             return "";
         },
+        getTripMembers() {
+            axios.get('/api/gettrip').then((res) => {
+                this.tripMembers = res.data;
+            });
+        },
+        getMembers() {
+            axios.get('/api/member').then((res) => {
+                this.allMemberrs = res.data;
+            });
+        },
+        showMembers(id) {
+            this.sawMembers = true;
+            this.showTripInfo = false;
+            // Reset selectedMembers to an empty array
+            this.selectedMembers = [];
+
+            // Iterate over tripMembers and match with allMemberrs
+            this.tripMembers.forEach(tripMember => {
+                this.allMemberrs.forEach(member => {
+                    if (id == tripMember.trip_id && tripMember.member_id == member.id) {
+                        // Push each matched member to selectedMembers
+                        this.selectedMembers.push(member);
+                    }
+                });
+            });
+        },
+        backToInfo(){
+            this.showTripInfo=true,
+            this.sawMembers=false
+        }
+
+
     },
 };
 </script>

@@ -41,5 +41,9 @@ class TripMembersController extends Controller
             // ... other data you want to send ...
         ]);
     }
+    public function getTrips() {
+     $tripmembers = TripMember::all();
+     return   $tripmembers;
+    }
 
 }

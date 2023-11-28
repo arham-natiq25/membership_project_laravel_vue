@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('/updateSeats',[SeatsUpdateController::class,'updateSeats'])->name('location.seats');
 Route::post('/savetrip', [TripMembersController::class, 'savetrip'])->name('trip-members');
+Route::get('/gettrip', [TripMembersController::class, 'getTrips'])->name('get-trip-members');
 Route::resource('/routes',RouteDetailsController::class);
 Route::resource('/locations',LocationDetailsController::class);
 Route::resource('/trips',TripDetailsController::class);
