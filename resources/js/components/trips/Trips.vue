@@ -118,7 +118,7 @@
 
     <div v-if="allTrips">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 mb-3">
                 <div class="form-inline">
                     <div class="input-group" style="width: 100%;">
                         <input class="form-control" type="search" v-model="searchQuery" placeholder="Search by Trip Name"
