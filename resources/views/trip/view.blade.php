@@ -26,7 +26,7 @@
 
         </div>
         <div class="card-body">
-           <trip-view/>
+           <trip-view :id="{{ $id }}" />
 
         </div>
         <!-- /.card-body -->

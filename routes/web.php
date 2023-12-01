@@ -28,7 +28,7 @@ Route::get('/', function () {
     return view('frontend.index');
 });
 //
-// Route::get('/trip-view',TripViewController::class)->name('trip-view');
+Route::get('/trip/{id}/view',TripViewController::class)->name('trip-view');
 // membership home page
 Route::get('/membership',MembershipHomeController::class)->name('membership');
 // customer home page

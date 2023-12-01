@@ -30,10 +30,6 @@ class TripMembersController extends Controller
                     'member_id' => $member_id,
                     'location_id' => $loc_id
                 ]);
-
-                $location->sold_seats = $location->sold_seats+1;
-                $location->avaliable_seats = $location->avaliable_seats - $location->sold_seats;
-                $location->save();
             }
         }
         return response()->json([

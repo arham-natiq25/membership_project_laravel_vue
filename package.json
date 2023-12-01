@@ -19,6 +19,7 @@
         "@stripe/stripe-js": "^2.1.11",
         "@vitejs/plugin-vue": "^4.4.0",
         "bootstrap-vue": "^2.23.1",
+        "element-plus": "^2.4.3",
         "flatpickr": "^4.6.13",
         "modal": "^1.2.0",
         "moment": "^2.29.4",
@@ -26,6 +27,7 @@
         "vue-axios": "^3.5.2",
         "vue-flatpickr-component": "^11.0.3",
         "vue-router": "^4.2.5",
+        "vue-select-3": "^1.0.1",
         "vuejs-datetimepicker": "^1.1.13"
     }
 }

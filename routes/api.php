@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\RouteDetailsController;
 use App\Http\Controllers\Backend\SeatsUpdateController;
 use App\Http\Controllers\Backend\TripDetailsController;
 use App\Http\Controllers\Backend\TripMembersController;
+use App\Http\Controllers\Backend\TripsDataCoontroller;
 use App\Http\Controllers\Backend\UsersData;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('/updateSeats',[SeatsUpdateController::class,'updateSeats'])->name('location.seats');
+Route::get('/trips/archieved',[TripsDataCoontroller::class,'archievedTrips'])->name('archievedTrips');
+Route::get('/trips/active',[TripsDataCoontroller::class,'activeTrips'])->name('activeTrips');
 Route::post('/savetrip', [TripMembersController::class, 'savetrip'])->name('trip-members');
 Route::get('/gettrip', [TripMembersController::class, 'getTrips'])->name('get-trip-members');
 Route::resource('/routes',RouteDetailsController::class);

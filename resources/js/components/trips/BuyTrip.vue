@@ -65,9 +65,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div v-if="message" class="alert alert-success">
-                                {{ message }}
-                            </div>
+
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="routes">Select Members</label>
