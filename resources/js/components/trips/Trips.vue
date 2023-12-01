@@ -171,168 +171,169 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-            <button class="btn btn-primary mr-2" @click="showTripform">Create</button>
-            <BuyTrip></BuyTrip>
-            <div class="col-md-12 ms-0 mt-2">
-                <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
-                    <li class="nav-item ">
-                        <a class="nav-link active" id="allTrips" data-toggle="pill" href="#custom-tabs-two-home" role="tab"
-                            aria-controls="custom-tabs-two-home" aria-selected="true">All Trips</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="activeTrips" data-toggle="pill" href="#custom-tabs-two-active" role="tab"
-                            aria-controls="custom-tabs-two-active" aria-selected="false">Active</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="archiveTrips" data-toggle="pill" href="#custom-tabs-two-profile" role="tab"
-                            aria-controls="custom-tabs-two-profile" aria-selected="false">Archieved</a>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <div class="tab-content" id="custom-tabs-two-tabContent">
-                        <div class="tab-pane fade show active" id="custom-tabs-two-home" role="tabpanel"
-                            aria-labelledby="allTrips">
-                            <div class="col-md-12 mt-2">
-                                <div class="table-responsive">
-                                    <table class="table table-secondary table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col" style="width: 20%">Trip Name</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Route</th>
-                                                <th scope="col">Price</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(data, index) in list" :key="data.id">
-                                                <td scope="row">{{ index + 1 }}</td>
-                                                <td>{{ data.trip_name }}</td>
-                                                <td>{{ formatDateString(data.trip_date) }}</td>
-                                                <td>{{ data.route.title }}</td>
-                                                <td>${{ formatPrice(data.price) }}</td>
-                                                <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
-                                                <td>
-                                                    <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
-                                                        @click="deleteTrip(data.id)"></i>
-                                                    <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
-                                                        @click="editTrip(data)"></i>
-                                                    <i class="far fa-eye btn btn-primary text-white btn-sm"
-                                                        @click="viewInfo(data)"></i>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- Add this section for pagination controls -->
+                <button class="btn btn-primary mr-2" @click="showTripform">Create</button>
+                <BuyTrip></BuyTrip>
+                <div class="col-md-12 ms-0 mt-2">
+                    <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                        <li class="nav-item ">
+                            <a class="nav-link active" id="allTrips" data-toggle="pill" href="#custom-tabs-two-home"
+                                role="tab" aria-controls="custom-tabs-two-home" aria-selected="true">All Trips</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="activeTrips" data-toggle="pill" href="#custom-tabs-two-active"
+                                role="tab" aria-controls="custom-tabs-two-active" aria-selected="false">Active</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="archiveTrips" data-toggle="pill" href="#custom-tabs-two-profile"
+                                role="tab" aria-controls="custom-tabs-two-profile" aria-selected="false">Archieved</a>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <div class="tab-content" id="custom-tabs-two-tabContent">
+                            <div class="tab-pane fade show active" id="custom-tabs-two-home" role="tabpanel"
+                                aria-labelledby="allTrips">
+                                <div class="col-md-12 mt-2">
+                                    <div class="table-responsive">
+                                        <table class="table table-secondary table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col" style="width: 20%">Trip Name</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Route</th>
+                                                    <th scope="col">Price</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(data, index) in list" :key="data.id">
+                                                    <td scope="row">{{ index + 1 }}</td>
+                                                    <td>{{ data.trip_name }}</td>
+                                                    <td>{{ formatDateString(data.trip_date) }}</td>
+                                                    <td>{{ data.route.title }}</td>
+                                                    <td>${{ formatPrice(data.price) }}</td>
+                                                    <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
+                                                    <td>
+                                                        <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
+                                                            @click="deleteTrip(data.id)"></i>
+                                                        <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
+                                                            @click="editTrip(data)"></i>
+                                                        <i class="far fa-eye btn btn-primary text-white btn-sm"
+                                                            @click="viewInfo(data)"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Add this section for pagination controls -->
 
-                                <nav class="">
-                                    <ul class="pagination">
-                                        <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
-                                            <a class="page-link" @click.prevent="changePage(currentPage - 1)" href="#"
-                                                aria-label="Previous">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </li>
-                                        <li v-for="page in totalPages" :key="page" class="page-item"
-                                            :class="{ 'active': page === currentPage }">
-                                            <a class="page-link" @click.prevent="changePage(page)" href="#">{{ page }}</a>
-                                        </li>
-                                        <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
-                                            <a class="page-link" @click.prevent="changePage(currentPage + 1)" href="#"
-                                                aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                                    <nav class="">
+                                        <ul class="pagination">
+                                            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                                                <a class="page-link" @click.prevent="changePage(currentPage - 1)" href="#"
+                                                    aria-label="Previous">
+                                                    <span aria-hidden="true">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            <li v-for="page in totalPages" :key="page" class="page-item"
+                                                :class="{ 'active': page === currentPage }">
+                                                <a class="page-link" @click.prevent="changePage(page)" href="#">{{ page
+                                                }}</a>
+                                            </li>
+                                            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                                                <a class="page-link" @click.prevent="changePage(currentPage + 1)" href="#"
+                                                    aria-label="Next">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
 
 
-                            </div>
-                        </div>
-                        <div class="tab-pane fade show " id="custom-tabs-two-active" role="tabpanel"
-                            aria-labelledby="allTrips">
-                            <div class="col-md-12 mt-2">
-                                <div class="table-responsive">
-                                    <table class="table table-secondary table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col" style="width: 20%">Trip Name</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Route</th>
-                                                <th scope="col">Price</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(data, index) in active" :key="data.id">
-                                                <td scope="row">{{ index + 1 }}</td>
-                                                <td>{{ data.trip_name }}</td>
-                                                <td>{{ formatDateString(data.trip_date) }}</td>
-                                                <td>{{ data.route.title }}</td>
-                                                <td>${{ formatPrice(data.price) }}</td>
-                                                <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
-                                                <td>
-                                                    <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
-                                                        @click="deleteTrip(data.id)"></i>
-                                                    <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
-                                                        @click="editTrip(data)"></i>
-                                                    <i class="far fa-eye btn btn-primary text-white btn-sm"
-                                                        @click="viewInfo(data)"></i>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel"
-                            aria-labelledby="archiveTrips">
-                            <div class="col-md-12 mt-2">
-                                <div class="table-responsive">
-                                    <table class="table table-secondary table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col" style="width: 20%">Trip Name</th>
-                                                <th scope="col">Date</th>
-                                                <th scope="col">Route</th>
-                                                <th scope="col">Price</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(data, index) in archived" :key="data.id">
-                                                <td scope="row">{{ index + 1 }}</td>
-                                                <td>{{ data.trip_name }}</td>
-                                                <td>{{ formatDateString(data.trip_date) }}</td>
-                                                <td>{{ data.route.title }}</td>
-                                                <td>${{ formatPrice(data.price) }}</td>
-                                                <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
-                                                <td>
-                                                    <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
-                                                        @click="deleteTrip(data.id)"></i>
-                                                    <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
-                                                        @click="editTrip(data)"></i>
-                                                    <i class="far fa-eye btn btn-primary text-white btn-sm"
-                                                        @click="viewInfo(data)"></i>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                            <div class="tab-pane fade show " id="custom-tabs-two-active" role="tabpanel"
+                                aria-labelledby="allTrips">
+                                <div class="col-md-12 mt-2">
+                                    <div class="table-responsive">
+                                        <table class="table table-secondary table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col" style="width: 20%">Trip Name</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Route</th>
+                                                    <th scope="col">Price</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(data, index) in active" :key="data.id">
+                                                    <td scope="row">{{ index + 1 }}</td>
+                                                    <td>{{ data.trip_name }}</td>
+                                                    <td>{{ formatDateString(data.trip_date) }}</td>
+                                                    <td>{{ data.route.title }}</td>
+                                                    <td>${{ formatPrice(data.price) }}</td>
+                                                    <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
+                                                    <td>
+                                                        <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
+                                                            @click="deleteTrip(data.id)"></i>
+                                                        <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
+                                                            @click="editTrip(data)"></i>
+                                                        <i class="far fa-eye btn btn-primary text-white btn-sm"
+                                                            @click="viewInfo(data)"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="custom-tabs-two-profile" role="tabpanel"
+                                aria-labelledby="archiveTrips">
+                                <div class="col-md-12 mt-2">
+                                    <div class="table-responsive">
+                                        <table class="table table-secondary table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col" style="width: 20%">Trip Name</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Route</th>
+                                                    <th scope="col">Price</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(data, index) in archived" :key="data.id">
+                                                    <td scope="row">{{ index + 1 }}</td>
+                                                    <td>{{ data.trip_name }}</td>
+                                                    <td>{{ formatDateString(data.trip_date) }}</td>
+                                                    <td>{{ data.route.title }}</td>
+                                                    <td>${{ formatPrice(data.price) }}</td>
+                                                    <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
+                                                    <td>
+                                                        <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
+                                                            @click="deleteTrip(data.id)"></i>
+                                                        <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
+                                                            @click="editTrip(data)"></i>
+                                                        <i class="far fa-eye btn btn-primary text-white btn-sm"
+                                                            @click="viewInfo(data)"></i>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- /.card -->
                 </div>
-                <!-- /.card -->
             </div>
-        </div>
         </div>
 
     </div>
