@@ -16,8 +16,7 @@ class TripDetailsController extends Controller
     public function index()
     {
 
-    $trips = Trip::with('route.locations')->get();
-
+    $trips = Trip::with('route.locations')->paginate(3); // Adjust the number of items per page as needed
     return response()->json($trips);
     }
 

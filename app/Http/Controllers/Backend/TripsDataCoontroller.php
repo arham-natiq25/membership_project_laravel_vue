@@ -26,4 +26,20 @@ class TripsDataCoontroller extends Controller
 
         return response()->json($activeTrips);
     }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Use the "like" operator to search by trip_name
+        if ($query!="") {
+            $searchResults = Trip::with('route.locations')
+            ->where('trip_name', 'like', '%' . $query . '%')
+            ->get();
+
+        return response()->json($searchResults);
+        }
+        else
+        return "";
+
+    }
 }

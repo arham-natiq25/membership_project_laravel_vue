@@ -118,24 +118,62 @@
 
     <div v-if="allTrips">
         <div class="row">
-        <div class="col-md-12 m-3"> <!-- Set the column width to 12 to take up full width -->
-            <div class="form-inline">
-                <div class="input-group" style="width: 100%;"> <!-- Set width to 100% -->
-                    <input class="form-control" type="search" placeholder="Search" aria-label="Search"
-                         style="width: 60%;" />
-                    <div class="input-group-append">
-                        <button class="btn btn-primary">
-                            Search
-                        </button>
+            <div class="col-12">
+                <div class="form-inline">
+                    <div class="input-group" style="width: 100%;">
+                        <input class="form-control" type="search" v-model="searchQuery" placeholder="Search by Trip Name"
+                            aria-label="Search" style="width: 60%;" />
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" @click="searchTrips">
+                                Search
+                            </button>
+                            <button class="btn btn-secondary" @click="resetSearch">
+                                Reset
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-12 mt-2" v-if="searchResults.length > 0">
+                <div class="table-responsive">
+                    <table class="table table-secondary table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col" style="width: 20%">Trip Name</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Route</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(data, index) in searchResults" :key="data.id">
+                                <td scope="row">{{ index + 1 }}</td>
+                                <td>{{ data.trip_name }}</td>
+                                <td>{{ formatDateString(data.trip_date) }}</td>
+                                <td>{{ data.route.title }}</td>
+                                <td>${{ formatPrice(data.price) }}</td>
+                                <td>{{ data.status == 1 ? "Active" : "Inactive" }}</td>
+                                <td>
+                                    <i class="fas fa-trash-alt btn btn-danger text-white btn-sm"
+                                        @click="deleteTrip(data.id)"></i>
+                                    <i class="far fa-edit btn btn-primary text-white btn-sm mx-2"
+                                        @click="editTrip(data)"></i>
+                                    <i class="far fa-eye btn btn-primary text-white btn-sm" @click="viewInfo(data)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-        <div class="col-md-12">
-            <button class="btn btn-primary mx-2" @click="showTripform">Create</button>
+        <div class="row">
+            <div class="col-md-12">
+            <button class="btn btn-primary mr-2" @click="showTripform">Create</button>
             <BuyTrip></BuyTrip>
-            <div class="col-md-12 mt-2">
+            <div class="col-md-12 ms-0 mt-2">
                 <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
                     <li class="nav-item ">
                         <a class="nav-link active" id="allTrips" data-toggle="pill" href="#custom-tabs-two-home" role="tab"
@@ -188,6 +226,30 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <!-- Add this section for pagination controls -->
+
+                                <nav class="">
+                                    <ul class="pagination">
+                                        <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
+                                            <a class="page-link" @click.prevent="changePage(currentPage - 1)" href="#"
+                                                aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li v-for="page in totalPages" :key="page" class="page-item"
+                                            :class="{ 'active': page === currentPage }">
+                                            <a class="page-link" @click.prevent="changePage(page)" href="#">{{ page }}</a>
+                                        </li>
+                                        <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
+                                            <a class="page-link" @click.prevent="changePage(currentPage + 1)" href="#"
+                                                aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+
+
                             </div>
                         </div>
                         <div class="tab-pane fade show " id="custom-tabs-two-active" role="tabpanel"
@@ -271,6 +333,8 @@
                 <!-- /.card -->
             </div>
         </div>
+        </div>
+
     </div>
 
 
@@ -296,6 +360,8 @@ export default {
                 dateFormat: "Y-m-d H:i:S", // Format as '2024-08-16 09:12:00'
                 allowInput: true,
             },
+            searchQuery: "", // New property for search query
+            searchResults: [], // Ne
             list: [],
             routes: [],
             items: {
@@ -321,6 +387,8 @@ export default {
             showModal: false,
             archived: [],
             active: [],
+            currentPage: 1,
+            totalPages: 1,
         };
     },
     mounted() {
@@ -330,6 +398,25 @@ export default {
 
     },
     methods: {
+        changePage(page) {
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page;
+                this.getTrips();
+            }
+        },
+        resetSearch() {
+            // Reset the searchQuery and searchResults
+            this.searchQuery = "";
+            this.searchResults = [];
+        },
+        searchTrips() {
+            axios.get(`/api/trips/search?query=${this.searchQuery}`)
+                .then(response => {
+                    this.searchResults = response.data;
+                    // You can handle the search results as needed
+                })
+                .catch(error => console.error(error));
+        },
         formatDateString(dateString) {
             if (dateString) {
                 const date = new Date(dateString);
@@ -394,9 +481,14 @@ export default {
             return `${price.toFixed(2)}`;
         },
         getTrips() {
-            axios.get("/api/trips").then((res) => {
-                this.list = res.data;
-            });
+            axios.get(`/api/trips?page=${this.currentPage}`)
+                .then((res) => {
+                    this.list = res.data.data; // Assuming your data is nested under 'data' key
+                    this.totalPages = res.data.last_page;
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         },
         getRoutes() {
             axios.get("/api/routes").then((res) => {
