@@ -26,6 +26,10 @@ class TripsDataCoontroller extends Controller
 
         return response()->json($activeTrips);
     }
+    function allTrips() {
+        $trips = Trip::with('route.locations')->paginate(3); // Adjust the number of items per page as needed
+        return response()->json($trips);
+    }
     public function search(Request $request)
     {
         $query = $request->input('query');

@@ -482,7 +482,7 @@ export default {
             return `${price.toFixed(2)}`;
         },
         getTrips() {
-            axios.get(`/api/trips?page=${this.currentPage}`)
+            axios.get(`/api/trips/all?page=${this.currentPage}`)
                 .then((res) => {
                     this.list = res.data.data; // Assuming your data is nested under 'data' key
                     this.totalPages = res.data.last_page;

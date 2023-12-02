@@ -90,7 +90,7 @@
                                         <option value="" disabled>Select</option>
                                         <option :value="location.id" v-for="location in selectedTrip.route.locations"
                                             :key="location.id">
-                                            {{ location.name }}
+                                            {{ location.name }} ({{ availableSeats[location.id] }})
                                         </option>
                                     </select>
                                 </div>
@@ -130,14 +130,54 @@ export default ({
             selectedMembers: [],
             message: "",
             error: {},
+            tripMembers:[],
         };
     },
     mounted() {
         this.getTrips(),
-            this.getCustomers()
+        this.getCustomers(),
+        this.getTripMembers(); // Add this line
+    },
+    computed:{
+        soldSeats() {
+            const soldSeatsCounts = {};
+
+            // Initialize soldSeatsCounts for each location
+            this.selectedTrip.route.locations.forEach(location => {
+                soldSeatsCounts[location.id] = 0;
+            });
+
+            // Count sold seats for each location
+            this.tripMembers.forEach(data => {
+                const locationId = data.location_id;
+                if (soldSeatsCounts.hasOwnProperty(locationId)) {
+                    soldSeatsCounts[locationId]++;
+                }
+            });
+
+            return soldSeatsCounts;
+        },
+        availableSeats() {
+            const availableSeatsCounts = {};
+            const locations = this.selectedTrip.route.locations;
+
+            for (let i = 0; i < locations.length; i++) {
+                const locationId = locations[i].id;
+                const totalSeats = locations[i].total_seats || 0;
+                const soldSeats = this.soldSeats[locationId] || 0;
+
+                availableSeatsCounts[locationId] = totalSeats - soldSeats;
+            }
+
+            return availableSeatsCounts;
+        },
     },
     methods: {
-
+        getTripMembers() {
+            axios.get('/api/gettrip').then((res) => {
+                this.tripMembers = res.data;
+            });
+        },
         saveMembersTrips() {
             if (this.selectedMembers.length === 0 || this.selectedLocation.length === 0) {
                 Swal.fire({
@@ -151,6 +191,7 @@ export default ({
                 const payload = {
                     loc_id: this.selectedLocation,
                     trip_id: this.selectedTrip.id,
+                    customer_id:this.selectedCustomer.id,
                     member: { ...this.selectedMembers }
                 };
                 axios.post('/api/savetrip', payload)
@@ -179,11 +220,11 @@ export default ({
                         }
 
                         // Optionally, you can show an error notification here
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: this.error,
-                        });
+                        // Swal.fire({
+                        //     icon: 'error',
+                        //     title: 'Oops...',
+                        //     text: 'Seats Unavialable',
+                        // });
                     });
 
             }
