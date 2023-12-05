@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Mail\TripPurchaseMail;
 use App\Models\Customer;
+use App\Models\EmailManager;
 use App\Models\Location;
 use App\Models\Member;
 use App\Models\Trip;
@@ -37,8 +38,8 @@ class TripMembersController extends Controller
         $tripDetails = Trip::find($trip_id)->toArray();
 
         // Retrieve the customer's email using the relationship
-        $customer = Customer::where('id',$customer_id)->first();
-        $user = User::where('id',$customer->user_id)->first();
+        $customer = Customer::where('id', $customer_id)->first();
+        $user = User::where('id', $customer->user_id)->first();
         $customerEmail = $user->email;
 
         $customerDetails = $customer->toArray();
@@ -63,6 +64,11 @@ class TripMembersController extends Controller
         Mail::to($customerEmail)
             ->send(new TripPurchaseMail($tripDetails, $customerDetails, $members, $fileName));
 
+
+        EmailManager::create([
+            'customer_id' => $customer_id,
+            'path_of_email' => "emails/" . $fileName
+        ]);
 
 
 

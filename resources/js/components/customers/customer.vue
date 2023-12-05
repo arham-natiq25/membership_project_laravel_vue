@@ -79,6 +79,29 @@
                 </table>
             </div>
 
+            <h3>Email Details</h3>
+            <div class="table-responsive table-bordered">
+                <table class="table table-primary">
+                    <thead>
+                        <tr>
+                            <th scope="col">Email No</th>
+                            <th scope="col" style="width: 70%;">Details</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(email, index) in filteredEmails" :key="email.id">
+                            <td>{{ index + 1 }}</td>
+                            <td>Trip Purchased Email send on {{ formatMemberSinceDate(email.current_date) }}</td>
+                            <td>
+                                <button class="btn btn-warning" @click="resendEmail(email)">Resend</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
         </div>
     </div>
 </template>
@@ -93,14 +116,24 @@ export default {
             selectedCustomer: null,
             searchQuery: '',
             filteredList: [],
-
+            emails: [],
+            customerEmails: [],
         }
     },
     computed: {
+        filteredEmails() {
+            if (this.selectedCustomer) {
+                // Filter emails for the selected customer
+                return this.emails.filter(email => email.customer_id === this.selectedCustomer.id);
+            } else {
+                return []; // Return an empty array if no customer is selected
+            }
+        },
 
     },
     mounted() {
         this.getData()
+        this.getEmails();
     },
     methods: {
         formatMemberSinceDate(date) {
@@ -150,7 +183,29 @@ export default {
                         });
                 }
             });
+        },
+        getEmails() {
+            axios.get('/api/emails').then((res) => {
+                this.emails = res.data;
+
+            });
+        },
+        resendEmail(data) {
+            const emailData = data;
+            axios.post('/api/email/resend', emailData)
+                .then(response => {
+                    Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Email has been resent',
+                        });
+                })
+                .catch(error => {
+
+                    console.error('Error resending email', error);
+                });
         }
+
 
     }
 }

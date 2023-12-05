@@ -186,6 +186,7 @@ export default ({
                     text: "Please select Atleast one Member and Location",
                 });
             }
+
             else {
 
                 const payload = {
@@ -202,9 +203,7 @@ export default ({
                         this.selectedMembers = [];
                         this.selectedLocation = [];
                         this.selectedTrip = [];
-                        this.showModalTwo = false;  // Close the second modal
-
-                        // Optionally, you can show a success notification here
+                        this.showModalTwo = false;
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
@@ -218,13 +217,6 @@ export default ({
                                 this.error = data.error;
                             }
                         }
-
-                        // Optionally, you can show an error notification here
-                        // Swal.fire({
-                        //     icon: 'error',
-                        //     title: 'Oops...',
-                        //     text: 'Seats Unavialable',
-                        // });
                     });
 
             }

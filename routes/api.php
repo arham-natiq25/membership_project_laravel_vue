@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\CustomerDetailsController;
+use App\Http\Controllers\Backend\EmailManagingController;
 use App\Http\Controllers\Backend\LocationDetailsController;
 use App\Http\Controllers\Backend\MemberController;
 use App\Http\Controllers\Backend\MembershipController;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::post('/email/resend',[EmailManagingController::class,'resendMail'])->name('resend-mail');
+Route::get('/emails',[EmailManagingController::class,'getEmails'])->name('get-emails');
 Route::post('/updateSeats',[SeatsUpdateController::class,'updateSeats'])->name('location.seats');
 Route::get('/trips/search',[TripsDataCoontroller::class,'search'])->name('search');
 Route::get('/trips/all',[TripsDataCoontroller::class,'allTrips'])->name('allTrips');
