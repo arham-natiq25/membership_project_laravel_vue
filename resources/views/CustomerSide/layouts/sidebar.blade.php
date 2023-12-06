@@ -18,28 +18,27 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
+               <li class="nav-item">
+                <a href="{{route('customer-dashboard')}}" class="nav-link">
+                  <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                      Dashboard
+                    </p>
+                  </a>
+              </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon far fa-copy"></i>
+            <a href="../gallery.html" class="nav-link">
+              <i class="nav-icon fas fa-plane "></i>
               <p>
-                Setup
-                <i class="right fas fa-angle-left"></i>
+                Trips
               </p>
             </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="../../index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Dashboard v3</p>
-                </a>
-              </li>
-            </ul>
           </li>
           <li class="nav-item">
             <a href="../gallery.html" class="nav-link">
-              <i class="nav-icon far fa-image"></i>
+              <i class="nav-icon far fa-address-card"></i>
               <p>
-                Gallery
+                Memberships
               </p>
             </a>
           </li>
