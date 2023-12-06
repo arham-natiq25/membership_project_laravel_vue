@@ -60,7 +60,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-6">
             <div class="form-group">
               <label for="membershipBuying"
                 >How many Memberships do you want to buy ?

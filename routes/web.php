@@ -27,8 +27,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('frontend.index');
 });
+Route::get('/customer/dashboard',function () {
+    return view('CustomerSide.dashboard.index');
+})->name('customer-dashboard');
+Route::get('/customer/login',function () {
+    return view('CustomerSide.login.login');
+})->name('customer-login');
 //
-Route::get('/trip/{id}/view',TripViewController::class)->name('trip-view');
+
+Route::group(['middleware'=>'admin'],function () {
+    Route::get('/trip/{id}/view',TripViewController::class)->name('trip-view');
 // membership home page
 Route::get('/membership',MembershipHomeController::class)->name('membership');
 // customer home page
@@ -42,8 +50,10 @@ Route::get('/routes',RoutesController::class)->name('route');
 // dashboard
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified',])->name('dashboard');
 
+
+});
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
