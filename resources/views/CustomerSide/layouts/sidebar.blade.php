@@ -27,7 +27,7 @@
                   </a>
               </li>
           <li class="nav-item">
-            <a href="../gallery.html" class="nav-link">
+            <a href="{{route('customer-trip')}}" class="nav-link">
               <i class="nav-icon fas fa-plane "></i>
               <p>
                 Trips

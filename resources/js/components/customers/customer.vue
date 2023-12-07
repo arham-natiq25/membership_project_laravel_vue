@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div class="col-md-12 m-3"> <!-- Set the column width to 12 to take up full width -->
+        <div class="col-md-12 mb-3"> <!-- Set the column width to 12 to take up full width -->
             <div class="form-inline">
                 <div class="input-group" style="width: 100%;"> <!-- Set width to 100% -->
                     <input class="form-control" type="search" placeholder="Search" aria-label="Search" v-model="searchQuery"
@@ -92,7 +92,7 @@
                     <tbody>
                         <tr v-for="(email, index) in filteredEmails" :key="email.id">
                             <td>{{ index + 1 }}</td>
-                            <td>Trip Purchased Email send on {{ formatMemberSinceDate(email.current_date) }}</td>
+                            <td>Trip Purchased Email send on {{ formatMemberSinceDate(email.created_at) }}</td>
                             <td>
                                 <button class="btn btn-warning" @click="resendEmail(email)">Resend</button>
                             </td>

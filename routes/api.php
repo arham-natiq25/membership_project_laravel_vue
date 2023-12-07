@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\TripDetailsController;
 use App\Http\Controllers\Backend\TripMembersController;
 use App\Http\Controllers\Backend\TripsDataCoontroller;
 use App\Http\Controllers\Backend\UsersData;
+use App\Http\Controllers\Frontend\GetLoginCustomerDataController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,14 @@ Route::resource('/customer',CustomerDetailsController::class);
 Route::post('/process-payment', [PaymentController::class,'processPayment']);
 Route::resource('/membership',MembershipController::class);
 Route::resource('/member',MemberController::class);
+
+
+
+// CUSTOMER APIS
+
+
+
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

@@ -179,48 +179,57 @@ export default ({
             });
         },
         saveMembersTrips() {
-            if (this.selectedMembers.length === 0 || this.selectedLocation.length === 0) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Please select Atleast one Member and Location",
-                });
-            }
+    if (this.selectedMembers.length === 0 || this.selectedLocation.length === 0) {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please select At least one Member and Location",
+        });
+    } else {
+        const locationId = this.selectedLocation;
+        const availableSeats = this.availableSeats[locationId];
 
-            else {
+        if (availableSeats === 0) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "No available seats for the selected location.",
+            });
+        } else {
+            const payload = {
+                loc_id: locationId,
+                trip_id: this.selectedTrip.id,
+                customer_id: this.selectedCustomer.id,
+                member: { ...this.selectedMembers }
+            };
 
-                const payload = {
-                    loc_id: this.selectedLocation,
-                    trip_id: this.selectedTrip.id,
-                    customer_id:this.selectedCustomer.id,
-                    member: { ...this.selectedMembers }
-                };
-                axios.post('/api/savetrip', payload)
-                    .then((res) => {
-                        this.message = res.data.message;
-                        this.error = {};  // Clear any previous error messages
-                        this.selectedCustomer = [];
-                        this.selectedMembers = [];
-                        this.selectedLocation = [];
-                        this.selectedTrip = [];
-                        this.showModalTwo = false;
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: res.data.message,
-                        });
-                    })
-                    .catch(error => {
-                        if (error.response && error.response.data) {
-                            const { data } = error.response;
-                            if (data.error) {
-                                this.error = data.error;
-                            }
-                        }
+            axios.post('/api/savetrip', payload)
+                .then((res) => {
+                    this.message = res.data.message;
+                    this.error = {};  // Clear any previous error messages
+                    this.selectedCustomer = [];
+                    this.selectedMembers = [];
+                    this.selectedLocation = [];
+                    this.selectedTrip = [];
+                    this.showModalTwo = false;
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: res.data.message,
                     });
+                })
+                .catch(error => {
+                    if (error.response && error.response.data) {
+                        const { data } = error.response;
+                        if (data.error) {
+                            this.error = data.error;
+                        }
+                    }
+                });
+        }
+    }
+},
 
-            }
-        },
 
         getTrips() {
             axios.get('/api/trips').then((res) => {

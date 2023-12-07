@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\MembershipHomeController;
 use App\Http\Controllers\Backend\RoutesController;
 use App\Http\Controllers\Backend\TripController;
 use App\Http\Controllers\Backend\TripViewController;
+use App\Http\Controllers\Frontend\CustomerTripsController;
 use App\Http\Controllers\Payment\newPaymentController as ControllersNewPaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,10 @@ Route::get('/customer/login',function () {
 })->name('customer-login');
 //
 
+
+Route::get('/trips/customer',CustomerTripsController::class)->name('customer-trip');
+
+
 Route::group(['middleware'=>'admin'],function () {
     Route::get('/trip/{id}/view',TripViewController::class)->name('trip-view');
 // membership home page
@@ -51,7 +56,6 @@ Route::get('/routes',RoutesController::class)->name('route');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified',])->name('dashboard');
-
 
 });
 Route::middleware('auth')->group(function () {
