@@ -47,28 +47,28 @@ class TripMembersController extends Controller
         $members = Member::whereIn('id', $member_ids)->get()->toArray();
 
         // // Send the email
-        $emailContent = view('emails.tripPurchase', compact('tripDetails', 'customerDetails', 'members'))->render();
+        // $emailContent = view('emails.tripPurchase', compact('tripDetails', 'customerDetails', 'members'))->render();
 
 
-        $folderPath = public_path('emails');
-        if (!file_exists($folderPath)) {
-            mkdir($folderPath, 0777, true);
-        }
+        // $folderPath = public_path('emails');
+        // if (!file_exists($folderPath)) {
+        //     mkdir($folderPath, 0777, true);
+        // }
 
 
 
-        $fileName = 'trip_purchase_' . now()->format('Ymd_His') . '.html';
-        $filePath = $folderPath . '/' . $fileName;
-        file_put_contents($filePath, view('emails.tripPurchase', compact('tripDetails', 'customerDetails', 'members'))->render());
+        // $fileName = 'trip_purchase_' . now()->format('Ymd_His') . '.html';
+        // $filePath = $folderPath . '/' . $fileName;
+        // file_put_contents($filePath, view('emails.tripPurchase', compact('tripDetails', 'customerDetails', 'members'))->render());
 
-        Mail::to($customerEmail)
-            ->send(new TripPurchaseMail($tripDetails, $customerDetails, $members, $fileName));
+        // Mail::to($customerEmail)
+        //     ->send(new TripPurchaseMail($tripDetails, $customerDetails, $members, $fileName));
 
 
-        EmailManager::create([
-            'customer_id' => $customer_id,
-            'path_of_email' => "emails/" . $fileName
-        ]);
+        // EmailManager::create([
+        //     'customer_id' => $customer_id,
+        //     'path_of_email' => "emails/" . $fileName
+        // ]);
 
 
 
