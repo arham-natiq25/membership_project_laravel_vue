@@ -190,7 +190,7 @@ export default {
             });
         },
         getLoginCusotmer() {
-            console.log("Customer ID:", this.customer_id);
+
             axios.get("/api/customer").then((res) => {
                 this.loginCustomer = res.data.filter(
                     (item) => item.user_id === this.customer_id

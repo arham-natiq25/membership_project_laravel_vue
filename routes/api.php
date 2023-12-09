@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\TripDetailsController;
 use App\Http\Controllers\Backend\TripMembersController;
 use App\Http\Controllers\Backend\TripsDataCoontroller;
 use App\Http\Controllers\Backend\UsersData;
+use App\Http\Controllers\Frontend\CustomerMembershipController;
 use App\Http\Controllers\Frontend\GetLoginCustomerDataController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;

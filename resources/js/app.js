@@ -9,6 +9,7 @@ import Location from "./components/Locations/Location.vue"
 import Route from "./components/routes/Route.vue"
 import TripView from "./components/trips/TripView.vue"
 import CustomerTrips from "./components/Frontend/CustomerTrips.vue"
+import CustomerMembership from "./components/Frontend/CustomerMembership.vue"
 const app = createApp({});
 app.component('welcome',Welcome);
 app.component('front-page',Frontend);
@@ -19,6 +20,7 @@ app.component('location',Location);
 app.component('route',Route);
 app.component('trip-view',TripView);
 app.component('customer-trip',CustomerTrips);
+app.component('customer-membership',CustomerMembership);
 
 app.mount("#app");
 

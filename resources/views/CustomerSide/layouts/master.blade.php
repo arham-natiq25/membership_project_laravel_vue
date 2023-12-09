@@ -37,6 +37,8 @@
         <link rel="stylesheet" href="{{ asset('backend/plugins/daterangepicker/daterangepicker.css') }}">
         <!-- Tempusdominus Bootstrap 4 -->
         <link rel="stylesheet" href="{{ asset('backend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+        {{-- <script src="https://js.stripe.com/v3/"></script> --}}
+
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->

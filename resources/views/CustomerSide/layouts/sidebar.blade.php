@@ -35,7 +35,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="../gallery.html" class="nav-link">
+            <a href="{{route('customer-membership')}}" class="nav-link">
               <i class="nav-icon far fa-address-card"></i>
               <p>
                 Memberships
