@@ -168,8 +168,8 @@ export default {
         },
         closeModal() {
             (this.selectedLocation = null),
-                (this.selectedMembers = []),
-                (this.selectedTrip = null);
+            (this.selectedMembers = []),
+            (this.selectedTrip = null);
             this.showModal = false;
         },
         getTripMembers() {
@@ -190,7 +190,6 @@ export default {
             });
         },
         getLoginCusotmer() {
-
             axios.get("/api/customer").then((res) => {
                 this.loginCustomer = res.data.filter(
                     (item) => item.user_id === this.customer_id
@@ -231,6 +230,7 @@ export default {
         },
         onNext() {
             if (
+                this.selectedTrip == null ||
                 this.selectedTrip.length == 0 ||
                 this.selectedLocation.length == 0 ||
                 this.selectedMembers.length === 0
@@ -238,7 +238,7 @@ export default {
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: "Please select both Trip and Location",
+                    text: "Please select both Trip and Location with atleast one member",
                 });
             } else {
                 const locationId = this.selectedLocation.id;
@@ -264,8 +264,8 @@ export default {
                             this.message = res.data.message;
                             this.error = {}; // Clear any previous error messages
                             this.selectedMembers = [];
-                            this.selectedLocation = null
-                            this.selectedTrip =null
+                            this.selectedLocation = null;
+                            this.selectedTrip = null;
                             Swal.fire({
                                 icon: "success",
                                 title: "Success",

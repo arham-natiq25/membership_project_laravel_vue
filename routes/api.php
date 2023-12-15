@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\TripDetailsController;
 use App\Http\Controllers\Backend\TripMembersController;
 use App\Http\Controllers\Backend\TripsDataCoontroller;
 use App\Http\Controllers\Backend\UsersData;
+use App\Http\Controllers\Frontend\AddMembershipController;
 use App\Http\Controllers\Frontend\CustomerMembershipController;
 use App\Http\Controllers\Frontend\GetLoginCustomerDataController;
 use App\Http\Controllers\PaymentController;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::post('/customer/add-Member',[AddMembershipController::class,'addMember'])->name('add-membership');
 Route::post('/email/resend',[EmailManagingController::class,'resendMail'])->name('resend-mail');
 Route::get('/emails',[EmailManagingController::class,'getEmails'])->name('get-emails');
 Route::post('/updateSeats',[SeatsUpdateController::class,'updateSeats'])->name('location.seats');
