@@ -8,8 +8,8 @@
       <div class="user-panel text-center mt-3 pb- mb-">
         <div class="info">
           <a href="#" class="d-block">SKI COMPANY</a>
-        </div>
         <p class="text-white">Welcome  {{Auth::user()->name}}</p>
+        </div>
     </div>
 
 

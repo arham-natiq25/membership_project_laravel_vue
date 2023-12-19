@@ -122,7 +122,6 @@
                 </div>
               </div>
             </div>
-
           </div>
           <div class="modal-footer justify-content-between">
             <button
@@ -157,27 +156,27 @@
           </div>
           <div class="modal-body">
             <div class="row">
+              <div class="col-md-12">
+                <div v-if="errorMessage" class="alert alert-danger">
+                  {{ errorMessage }}
+                </div>
+                <div class="form-group">
+                  <label for="card-number">Card Number</label>
 
-                <div class="col-md-12">
-                    <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-                  <div class="form-group">
-                    <label for="card-number">Card Number</label>
-
-                    <div id="card-number" class="form-control"></div>
-                  </div>
+                  <div id="card-number" class="form-control"></div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <label for="card-expiry">Expiration Date</label>
-                  <div id="card-expiry" class="form-control"></div>
-                </div>
-                <div class="col-md-6">
-                  <label for="card-cvc">CVC</label>
-                  <div id="card-cvc" class="form-control"></div>
-                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <label for="card-expiry">Expiration Date</label>
+                <div id="card-expiry" class="form-control"></div>
               </div>
-
+              <div class="col-md-6">
+                <label for="card-cvc">CVC</label>
+                <div id="card-cvc" class="form-control"></div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer justify-content-between">
             <button
@@ -188,23 +187,25 @@
               Close
             </button>
             <button
-            type="button"
-            class="btn btn-outline-dark"
-            @click="submit"
-            :disabled="loading"
-          >
-            <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span v-else>Save</span>
-          </button>
-
+              type="button"
+              class="btn btn-outline-dark"
+              @click="submit"
+              :disabled="loading"
+            >
+              <span
+                v-if="loading"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span v-else>Save</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
     <div class="modal-backdrop fade show"></div>
   </div>
-
-
 </template>
 <script>
 import axios from "axios";
@@ -231,12 +232,12 @@ export default {
       message: "",
       error: {},
       tripMembers: [],
-      paymentShow:false,
+      paymentShow: false,
       loading: false,
     };
   },
   mounted() {
-    this.loadStripe()
+    this.loadStripe();
     this.getTrips(), this.getCustomers(), this.getTripMembers(); // Add this line
   },
   computed: {
@@ -274,71 +275,83 @@ export default {
     },
   },
   methods: {
-    showPaymentMethod(){
-
-        if (
+    showPaymentMethod() {
+      if (
         this.selectedMembers.length === 0 ||
         this.selectedLocation.length === 0
       ) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Please select At least one Member and Location",
+          text: "Please select at least one Member and Location",
         });
-      }else{
-          this.paymentShow=true,
-          this.showModalTwo=false
+      } else {
+        const locationId = this.selectedLocation;
+        const availableSeats = this.availableSeats[locationId];
+
+        if (availableSeats === 0) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "No available seats for the selected location.",
+          });
+        } else {
+          this.paymentShow = true;
+          this.showModalTwo = false;
+        }
       }
     },
-    closePaymentMethod(){
-        this.paymentShow=false,
-        this.showModalTwo=true
+
+    closePaymentMethod() {
+      (this.paymentShow = false), (this.showModalTwo = true);
     },
     loadStripe() {
-            // if current windonw has Stripe set primary key
-            if (window.Stripe) {
-                this.stripe = window.Stripe("pk_test_51NUU03Emu0Ala7lxKFLz0kgK8mfOVQr99wlJMIDW39xzneQ0B6Zb2x9irWjjNuldkUYyDFQG11FE50M6px3wvrVx00A0milkpo");
-                this.elements = this.stripe.elements();
-                // Create an instance of the card number Element
-                this.cardNumberElement = this.elements.create("cardNumber", {
-                    placeholder: "Card Number",
-                });
-                this.cardNumberElement.mount("#card-number");
+      // if current windonw has Stripe set primary key
+      if (window.Stripe) {
+        this.stripe = window.Stripe(
+          "pk_test_51NUU03Emu0Ala7lxKFLz0kgK8mfOVQr99wlJMIDW39xzneQ0B6Zb2x9irWjjNuldkUYyDFQG11FE50M6px3wvrVx00A0milkpo"
+        );
+        this.elements = this.stripe.elements();
+        // Create an instance of the card number Element
+        this.cardNumberElement = this.elements.create("cardNumber", {
+          placeholder: "Card Number",
+        });
+        this.cardNumberElement.mount("#card-number");
 
-                // Create an instance of the card expiry Element
-                this.cardExpiryElement = this.elements.create("cardExpiry", {
-                    placeholder: "MM / YY",
-                });
-                this.cardExpiryElement.mount("#card-expiry");
+        // Create an instance of the card expiry Element
+        this.cardExpiryElement = this.elements.create("cardExpiry", {
+          placeholder: "MM / YY",
+        });
+        this.cardExpiryElement.mount("#card-expiry");
 
-                // Create an instance of the card cvc Element
-                this.cardCvcElement = this.elements.create("cardCvc", {
-                    placeholder: "CVC",
-                });
-                this.cardCvcElement.mount("#card-cvc");
-            } else {
-                // Handle the case when Stripe is not available
-                console.error("Stripe is not available");
-            }
-        },
+        // Create an instance of the card cvc Element
+        this.cardCvcElement = this.elements.create("cardCvc", {
+          placeholder: "CVC",
+        });
+        this.cardCvcElement.mount("#card-cvc");
+      } else {
+        // Handle the case when Stripe is not available
+        console.error("Stripe is not available");
+      }
+    },
 
-        async submit() {
-            this.loading = true; // Set loading to true before making the API call
-            this.errorMessage = "";
-            const cardElement = this.elements.getElement("cardNumber");
-            const { paymentMethod, error } = await this.stripe.createPaymentMethod({
-                type: "card",
-                card: cardElement,
-            });
-            console.log("Error from Stripe:", error); // Log Stripe error
-            if (error) {
-                this.errorMessage = error.message;
-            }
-            else {
-                this.saveMembersTrips(paymentMethod.id);
-            }
-            console.log("Final error message:", this.errorMessage); // Log final error message
-        },
+    async submit() {
+      // Set loading to true before making the API call
+      this.errorMessage = "";
+      const cardElement = this.elements.getElement("cardNumber");
+      const { paymentMethod, error } = await this.stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+      });
+      console.log("Error from Stripe:", error); // Log Stripe error
+      if (error) {
+        this.errorMessage = error.message;
+      } else {
+        this.loading = true;
+        this.saveMembersTrips(paymentMethod.id);
+      }
+      console.log("Final error message:", this.errorMessage); // Log final error message
+    },
     getTripMembers() {
       axios.get("/api/gettrip").then((res) => {
         this.tripMembers = res.data;
@@ -383,8 +396,7 @@ export default {
               this.selectedLocation = [];
               this.selectedTrip = [];
               this.showModalTwo = false;
-              this.paymentShow=false,
-              this.loading=false
+              (this.paymentShow = false), (this.loading = false);
               Swal.fire({
                 icon: "success",
                 title: "Success",
@@ -395,6 +407,7 @@ export default {
               if (error.response && error.response.data) {
                 const { data } = error.response;
                 if (data.error) {
+                  this.errorMessage = data.error;
                   this.error = data.error;
                 }
               }
