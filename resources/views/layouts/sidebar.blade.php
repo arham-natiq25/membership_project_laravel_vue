@@ -5,15 +5,16 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user (optional) -->
-      <div class="user-panel text-center mt-3 pb-3 mb-3">
+      <div class="user-panel text-center mt-3 pb- mb-">
         <div class="info">
           <a href="#" class="d-block">SKI COMPANY</a>
         </div>
-      </div>
+        <p class="text-white">Welcome  {{Auth::user()->name}}</p>
+    </div>
 
 
-      <!-- Sidebar Menu -->
-      <nav class="mt-2">
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
