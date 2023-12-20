@@ -86,7 +86,7 @@
             <button
               type="button"
               class="btn btn-outline-dark"
-              @click="showPaymentMethod"
+              @click="showCardMethod"
             >
               Pay using Your Card
             </button>
@@ -165,6 +165,57 @@
     </div>
     <div class="modal-backdrop fade show"></div>
   </div>
+  <div v-show="payCard">
+    <div class="modal fade show" style="display: block">
+      <div class="modal-dialog">
+        <div class="modal-content bg-light">
+          <div class="modal-header">
+            <h4 class="modal-title">Payment Using Card</h4>
+            <button type="button" class="close" @click="closeCardMethod">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <label>Select Card</label>
+                    <div v-for="card in cards" :key="card.id">
+                        <input type="radio" :id="'card_' + card.id" name="selectedCard" class="m-2" :value="card" v-model="selectedCard">
+                        <label :for="'card_' + card.id" class="m-2">
+                            **** **** **** {{ card.last_four_digits }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              @click="closeCardMethod"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-dark"
+              @click="saveMemberTripThroughCard"
+              :disabled="loading"
+            >
+              <span
+                v-if="loading"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span v-else>Payment</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+  </div>
 
   <div class="d-flex justify-content-between">
     <h3>List of {{ user.name }} Trips</h3>
@@ -228,6 +279,9 @@ export default {
       alltripMembers: [],
       message: "",
       error: {},
+      cards:[],
+      selectedCard:{},
+      payCard:false
     };
   },
   mounted() {
@@ -239,6 +293,7 @@ export default {
     this.loadStripe();
     this.getLoginCusotmer();
     this.getCustomerTrips();
+    this.getCustomerCards()
   },
   computed: {
     soldSeats() {
@@ -275,6 +330,36 @@ export default {
     },
   },
   methods: {
+    showCardMethod(){
+        if (
+        this.selectedMembers.length === 0 ||
+        this.selectedLocation.length === 0
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please select at least one Member and Location",
+        });
+      } else {
+        const locationId = this.selectedLocation;
+        const availableSeats = this.availableSeats[locationId];
+
+        if (availableSeats === 0) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "No available seats for the selected location.",
+          });
+        } else {
+          this.payCard = true;
+          this.showModal = false;
+        }
+      }
+    },
+    closeCardMethod(){
+        (this.showModal = true), (this.payCard = false);
+
+    },
     showPaymentMethod() {
       if (
         this.selectedMembers.length === 0 ||
@@ -355,6 +440,11 @@ export default {
       }
       console.log("Final error message:", this.errorMessage); // Log final error message
     },
+    getCustomerCards(){
+        axios.get('/customer-profile').then((res)=>{
+            this.cards=res.data;
+        });
+    },
     saveMembersTrips(paymentMethodId) {
       if (
         this.selectedMembers.length === 0 ||
@@ -411,6 +501,63 @@ export default {
         }
       }
     },
+    saveMemberTripThroughCard(){
+        if (
+        this.selectedMembers.length === 0 ||
+        this.selectedLocation.length === 0
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please select At least one Member and Location",
+        });
+      } else {
+            this.loading=true;
+        const locationId = this.selectedLocation.id;
+        const availableSeats = this.availableSeats[locationId];
+
+        if (availableSeats === 0) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "No available seats for the selected location.",
+          });
+        } else {
+          const payload = {
+            card:this.selectedCard,
+            loc_id: locationId,
+            trip_id: this.selectedTrip.id,
+            customer_id: this.loginCustomer.id,
+            member: { ...this.selectedMembers },
+          };
+
+          axios
+            .post("/trip/pay-with-card", payload)
+            .then((res) => {
+              this.message = res.message;
+              this.error = {}; // Clear any previous error messages
+              this.selectedMembers = [];
+              this.selectedLocation = null;
+              this.selectedTrip = null;
+              (this.payCard = false), (this.loading = false);
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: res.data.message,
+              });
+            })
+            .catch((error) => {
+              if (error.response && error.response.data) {
+                const { data } = error.response;
+                if (data.error) {
+                  this.errorMessage = data.error;
+                  this.error = data.error;
+                }
+              }
+            });
+        }
+      }
+     },
     formatPrice(price) {
       return `${price.toFixed(2)}`;
     },

@@ -8,7 +8,9 @@ use App\Http\Controllers\Backend\TripController;
 use App\Http\Controllers\Backend\TripViewController;
 use App\Http\Controllers\Frontend\CustomerMembershipController;
 use App\Http\Controllers\Frontend\CustomerTripsController;
+use App\Http\Controllers\Frontend\GetCustomerProfile;
 use App\Http\Controllers\Frontend\GetLoginCustomerTrips;
+use App\Http\Controllers\Frontend\SaveTripCardController;
 use App\Http\Controllers\Payment\newPaymentController as ControllersNewPaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -26,8 +28,10 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
+// apis
 Route::get('/customer-trips',[GetLoginCustomerTrips::class,'index'])->name('customer.trips');
+Route::get('/customer-profile',[GetCustomerProfile::class,'index'])->name('customer-profile');
+Route::post('/trip/pay-with-card',[SaveTripCardController::class,'index'])->name('trip.customer-card-payment');
 
 
 
@@ -43,6 +47,7 @@ Route::get('/customer/login',function () {
 //
 
 
+// here
 Route::get('/membership/customer',CustomerMembershipController::class)->name('customer-membership');
 
 Route::get('/trips/customer',CustomerTripsController::class)->name('customer-trip');
