@@ -5,9 +5,13 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user (optional) -->
-      <div class="user-panel text-center mt-3 pb-3 mb-3">
+      <div class="user-panel text-center  mt-3 ">
         <div class="info">
-          <a href="#" class="d-block">SKI COMPANY</a>
+          <h4 class="d-block ">SKI COMPANY</h4>
+          <p>
+           Welcome
+            {{Auth::user()->name}}
+          </p>
         </div>
       </div>
 

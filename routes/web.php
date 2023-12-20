@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\TripController;
 use App\Http\Controllers\Backend\TripViewController;
 use App\Http\Controllers\Frontend\CustomerMembershipController;
 use App\Http\Controllers\Frontend\CustomerTripsController;
+use App\Http\Controllers\Frontend\GetLoginCustomerTrips;
 use App\Http\Controllers\Payment\newPaymentController as ControllersNewPaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,10 @@ use Illuminate\Support\Facades\Route;
 
 
 
+Route::get('/customer-trips',[GetLoginCustomerTrips::class,'index'])->name('customer.trips');
+
+
+
 Route::get('/', function () {
     return view('frontend.index');
 });
@@ -36,6 +41,8 @@ Route::get('/customer/login',function () {
     return view('CustomerSide.login.login');
 })->name('customer-login');
 //
+
+
 Route::get('/membership/customer',CustomerMembershipController::class)->name('customer-membership');
 
 Route::get('/trips/customer',CustomerTripsController::class)->name('customer-trip');
