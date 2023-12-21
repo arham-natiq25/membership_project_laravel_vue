@@ -482,7 +482,9 @@ export default {
               this.selectedMembers = [];
               this.selectedLocation = null;
               this.selectedTrip = null;
+              this.getCustomerTrips();
               (this.paymentShow = false), (this.loading = false);
+              this.
               Swal.fire({
                 icon: "success",
                 title: "Success",
@@ -539,6 +541,7 @@ export default {
               this.selectedMembers = [];
               this.selectedLocation = null;
               this.selectedTrip = null;
+              this.getCustomerTrips();
               (this.payCard = false), (this.loading = false);
               Swal.fire({
                 icon: "success",

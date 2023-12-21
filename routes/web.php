@@ -6,8 +6,11 @@ use App\Http\Controllers\Backend\MembershipHomeController;
 use App\Http\Controllers\Backend\RoutesController;
 use App\Http\Controllers\Backend\TripController;
 use App\Http\Controllers\Backend\TripViewController;
+use App\Http\Controllers\Frontend\CustomerMembershipBuyController;
 use App\Http\Controllers\Frontend\CustomerMembershipController;
 use App\Http\Controllers\Frontend\CustomerTripsController;
+use App\Http\Controllers\Frontend\GetActiveMembershipController;
+use App\Http\Controllers\Frontend\GetCustomerMemberships;
 use App\Http\Controllers\Frontend\GetCustomerProfile;
 use App\Http\Controllers\Frontend\GetLoginCustomerTrips;
 use App\Http\Controllers\Frontend\SaveTripCardController;
@@ -32,9 +35,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/customer-trips',[GetLoginCustomerTrips::class,'index'])->name('customer.trips');
 Route::get('/customer-profile',[GetCustomerProfile::class,'index'])->name('customer-profile');
 Route::post('/trip/pay-with-card',[SaveTripCardController::class,'index'])->name('trip.customer-card-payment');
-
-
-
+Route::get('/customer-memberships',[GetCustomerMemberships::class,'index'])->name('customer-memberships');
+Route::get('/active/membership',[GetActiveMembershipController::class,'index'])->name('active-membership');
+Route::post('customer/membership-payment',[CustomerMembershipBuyController::class,'index'])->name('customer-membershipBuy');
 Route::get('/', function () {
     return view('frontend.index');
 });
