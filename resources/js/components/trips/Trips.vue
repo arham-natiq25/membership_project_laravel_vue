@@ -228,7 +228,7 @@
                                     </div>
                                     <!-- Add this section for pagination controls -->
 
-                                    <nav class="">
+                                    <nav class="" v-if="totalPages>1">
                                         <ul class="pagination">
                                             <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
                                                 <a class="page-link" @click.prevent="changePage(currentPage - 1)" href="#"
@@ -393,7 +393,9 @@ export default {
         };
     },
     mounted() {
-        this.getTrips(), this.getRoutes(), this.getArchievedTrips(), this.getActiveTrips();
+        this.getArchievedTrips(),
+        this.getActiveTrips(),
+        this.getTrips(), this.getRoutes()
     },
     computed: {
 
@@ -530,6 +532,9 @@ export default {
                         setTimeout(() => {
                             this.successMessage = "";
                         }, 5000);
+                        this.getArchievedTrips(),
+                        this.getActiveTrips(),
+                        this.getTrips()
                     })
                     .catch((error) => {
                         if (error.response && error.response.data) {
@@ -560,6 +565,9 @@ export default {
                 (this.isEditing = true),
                 (this.createTripForm = true);
             this.allTrips = false;
+            this.getArchievedTrips(),
+            this.getActiveTrips(),
+            this.getTrips()
         },
 
         async deleteTrip(id) {
@@ -580,6 +588,10 @@ export default {
                     await axios.delete(`/api/trips/${id}`);
                     this.getTrips();
                     Swal.fire("Deleted!", "Your trip has been deleted.", "success");
+
+                    this.getArchievedTrips(),
+                    this.getActiveTrips(),
+                    this.getTrips()
                 }
                 // if getting any error in deleting
             } catch (error) {

@@ -132,6 +132,7 @@ class RouteDetailsController extends Controller
      */
     public function destroy(Route $route)
     {
+        $route->locations()->delete();
         $route->delete();
         return response()->json([
             'message'=>'Route Deleted successfully',
