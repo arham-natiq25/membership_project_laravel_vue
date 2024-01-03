@@ -24,7 +24,14 @@ class StripePaymentGateway implements Payments {
     function charge($request)
     {
         Stripe::setApiKey(config('stripe.sk'));
-        $paymentMethodId = $request->paymentMethodId;
+        if($request->method===1){
+            $paymentMethodId = $request->card['paymentMethodId'];
+            $stripeCustomer=$request->card['customer_payment_id'];
+        }
+        elseif($request->method===0){
+            $paymentMethodId = $request->paymentMethodId;
+        }
+
         $customer_id = $request->input('customer_id');
         $trip_id = $request->input('trip_id');
         $trip = Trip::where('id',$trip_id)->first();
@@ -35,13 +42,13 @@ class StripePaymentGateway implements Payments {
         $lastFourDigits = $paymentMethod->card->last4;
 
         try {
-            $stripeCustomer = StripeCustomer::create([
-                'email'=>$user->email,
-                'name'=>$user->name,
-                'payment_method'=>$paymentMethodId
-            ]);
-
-
+            if($request->method===0){
+                $stripeCustomer = StripeCustomer::create([
+                    'email'=>$user->email,
+                    'name'=>$user->name,
+                    'payment_method'=>$paymentMethodId
+                ]);
+            }
             $intent = PaymentIntent::create([
                 'payment_method' => $paymentMethodId, // from frontend
                 'amount' => $trip->price*100, // Set the amount to be charged (in cents)
@@ -53,17 +60,20 @@ class StripePaymentGateway implements Payments {
             ]);
                 $chargeId = $intent->latest_charge;
 
-                CustomerProfile::create([
-                    'customer_id'=>$user->id,
-                    'last_four_digits'=>$lastFourDigits,
-                    'customer_payment_id'=>$stripeCustomer->id,
-                    'paymentMethodId'=>$paymentMethodId
-                ]);
+                if($request->method===0){
+                    CustomerProfile::create([
+                        'customer_id'=>$user->id,
+                        'last_four_digits'=>$lastFourDigits,
+                        'customer_payment_id'=>$stripeCustomer->id,
+                        'paymentMethodId'=>$paymentMethodId
+                    ]);
+                }
+
                 TransactionRecords::create([
                     'customer_id'=>$user->id,
                     'payment'=>$trip->price,
                     'trx_id'=>$chargeId,
-                    'payment_for'=>1 // 1 for trip
+                    'payment_for'=>$request->payment_for // 1 for trip
                 ]);
 
 

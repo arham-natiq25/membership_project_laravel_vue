@@ -23,7 +23,7 @@ class TripMembersController extends Controller
 {
     public function savetrip(Request $request)
     {
-        $paymentMethodId = $request->paymentMethodId;
+      
         $loc_id = $request->input('loc_id');
         $customer_id = $request->input('customer_id');
         $trip_id = $request->input('trip_id');

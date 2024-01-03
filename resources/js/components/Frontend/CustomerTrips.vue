@@ -472,10 +472,12 @@ export default {
             trip_id: this.selectedTrip.id,
             customer_id: this.loginCustomer.id,
             member: { ...this.selectedMembers },
+            method:0,
+            payment_for:1 // 1 for tripe
           };
 
           axios
-            .post("/api/savetrip", payload)
+            .post("/savetrip", payload)
             .then((res) => {
               this.message = res.message;
               this.error = {}; // Clear any previous error messages
@@ -484,7 +486,6 @@ export default {
               this.selectedTrip = null;
               this.getCustomerTrips();
               (this.paymentShow = false), (this.loading = false);
-              this.
               Swal.fire({
                 icon: "success",
                 title: "Success",
@@ -497,6 +498,7 @@ export default {
                 if (data.error) {
                   this.errorMessage = data.error;
                   this.error = data.error;
+                  this.loading=false;
                 }
               }
             });
@@ -531,10 +533,12 @@ export default {
             trip_id: this.selectedTrip.id,
             customer_id: this.loginCustomer.id,
             member: { ...this.selectedMembers },
+            method:1,
+            payment_for:1 // 1for trips
           };
 
           axios
-            .post("/trip/pay-with-card", payload)
+            .post("/savetrip", payload)
             .then((res) => {
               this.message = res.message;
               this.error = {}; // Clear any previous error messages
