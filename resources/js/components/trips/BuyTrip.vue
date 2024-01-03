@@ -387,7 +387,7 @@ export default {
           };
 
           axios
-            .post("/api/savetrip", payload)
+            .post("/savetrip", payload)
             .then((res) => {
               this.message = res.data.message;
               this.error = {}; // Clear any previous error messages
@@ -409,6 +409,7 @@ export default {
                 if (data.error) {
                   this.errorMessage = data.error;
                   this.error = data.error;
+                  this.loading=false
                 }
               }
             });

@@ -4,7 +4,9 @@ use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\LocationController;
 use App\Http\Controllers\Backend\MembershipHomeController;
 use App\Http\Controllers\Backend\RoutesController;
+use App\Http\Controllers\Backend\SettingController;
 use App\Http\Controllers\Backend\TripController;
+use App\Http\Controllers\Backend\TripMembersController;
 use App\Http\Controllers\Backend\TripViewController;
 use App\Http\Controllers\Frontend\CustomerMembershipBuyController;
 use App\Http\Controllers\Frontend\CustomerMembershipController;
@@ -47,7 +49,16 @@ Route::get('/customer/dashboard',function () {
 Route::get('/customer/login',function () {
     return view('CustomerSide.login.login');
 })->name('customer-login');
+// SAVE TRIP
+Route::post('/savetrip', [TripMembersController::class, 'savetrip'])->name('save-trip-members');
 //
+//setting route
+Route::get('/setting',function () {
+    return view('settings.index');
+})->name('setting');
+// set Gateway
+Route::post('/update/gateway',[SettingController::class,'UpdateGateway'])->name('update-gateway')->middleware('admin');
+Route::get('/get/gateway',[SettingController::class,'getGateway'])->name('get-gateway')->middleware('admin');
 
 
 // here

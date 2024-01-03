@@ -88,6 +88,14 @@
             </a>
           </li>
           <li class="nav-item">
+            <a href="{{route('setting')}}" class="nav-link">
+              <i class="nav-icon fas fa-cogs"></i>
+              <p>
+                Setting
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <form method="POST" action="{{ route('logout') }}">
              @csrf
            <a  href="{{ route('logout') }}"
