@@ -384,6 +384,8 @@ export default {
             trip_id: this.selectedTrip.id,
             customer_id: this.selectedCustomer.id,
             member: { ...this.selectedMembers },
+            method:0,
+            payment_for:1 // 1 for tripe
           };
 
           axios

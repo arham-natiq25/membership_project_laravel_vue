@@ -444,7 +444,8 @@ export default {
         price: this.paymentAmount,
         items: this.items,
         membership_id: this.membership.id,
-        method:0 // with new card
+        method:0 ,// with new card
+        payment_for :0 // membership
       };
 
       axios
@@ -480,7 +481,10 @@ export default {
               this.loading=false
             }
           }
-        });
+        }).finally(() => {
+        // Code to run regardless of success or error
+            this.loading=false
+      });
     },
     getCustomerCards(){
         axios.get('/customer-profile').then((res)=>{
@@ -502,7 +506,8 @@ export default {
         price: this.paymentAmount,
         items: this.items,
         membership_id: this.membership.id,
-        method:1 // with old card
+        method:1, // with old card
+        payment_for:0 // 0 for membership
 
       };
       this.loading=true

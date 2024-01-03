@@ -13,6 +13,7 @@ use App\Models\TransactionRecords;
 use App\Models\Trip;
 use App\Models\TripMember;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Stripe\Customer as StripeCustomer;
 use Stripe\PaymentIntent;
@@ -32,12 +33,19 @@ class StripePaymentGateway implements Payments {
             $paymentMethodId = $request->paymentMethodId;
         }
 
-        $customer_id = $request->input('customer_id');
-        $trip_id = $request->input('trip_id');
-        $trip = Trip::where('id',$trip_id)->first();
-        $customer = Customer::where('id', $customer_id)->first();
+        if ($request->payment_for===1) {
+            $customer_id = $request->input('customer_id');
+            $trip_id = $request->input('trip_id');
+            $trip = Trip::where('id',$trip_id)->first();
+            $price = $trip->price;
+            $customer = Customer::where('id', $customer_id)->first();
+            $user = User::where('id', $customer->user_id)->first();
+        }elseif ($request->payment_for===0) {
+            $user = Auth::user();
+            $price = $request->price;
+
+        }
         // get user email nd name here
-        $user = User::where('id', $customer->user_id)->first();
         $paymentMethod = PaymentMethod::retrieve($paymentMethodId);
         $lastFourDigits = $paymentMethod->card->last4;
 
@@ -51,7 +59,7 @@ class StripePaymentGateway implements Payments {
             }
             $intent = PaymentIntent::create([
                 'payment_method' => $paymentMethodId, // from frontend
-                'amount' => $trip->price*100, // Set the amount to be charged (in cents)
+                'amount' => $price*100 , // Set the amount to be charged (in cents)
                 'currency' => 'usd',
                 'confirmation_method' => 'manual', // always manual
                 'confirm' => true, // always true,
@@ -71,34 +79,25 @@ class StripePaymentGateway implements Payments {
 
                 TransactionRecords::create([
                     'customer_id'=>$user->id,
-                    'payment'=>$trip->price,
+                    'payment'=>$price,
                     'trx_id'=>$chargeId,
                     'payment_for'=>$request->payment_for // 1 for trip
                 ]);
 
-
-                return response()->json([
-                    'message' => 'You Buy Trip Successfully',
-                ]);
-
-
+                if ($request->payment_for===0) {
+                    return response()->json([
+                        'message' => 'You Buy Membership Successfully',
+                    ]);
+                }
+                elseif ($request->payment_for===1) {
+                    return response()->json([
+                        'message' => 'You Buy Trip Successfully',
+                    ]);
+                }
         } catch (\Throwable $th) {
             return response()->json([
                 'error' =>  $th->getMessage(),
             ], 500);
         }
-
-
-        // get customer ..
-
-
-
-
-        // // Get member details for the customer
-
-        // // Send the email
-
-
-
     }
 }
