@@ -214,7 +214,11 @@
                 :value="card"
                 v-model="selectedCard"
               />
-              <label :for="'card_' + card.id" class="m-2"  style="font-size: 16px;">
+              <label
+                :for="'card_' + card.id"
+                class="m-2"
+                style="font-size: 16px"
+              >
                 **** **** **** {{ card.last_four_digits }}
               </label>
             </div>
@@ -250,7 +254,6 @@
       </div>
     </div>
   </div>
-
 </template>
 <script>
 import axios from "axios";
@@ -282,9 +285,9 @@ export default {
       loading: false,
       message: "",
       error: {},
-      payCard:false,
-      cards:[],
-      selectedCard:""
+      payCard: false,
+      cards: [],
+      selectedCard: "",
     };
   },
   mounted() {
@@ -434,7 +437,7 @@ export default {
       if (error) {
         this.errorMessage = error.message;
       } else {
-         this.loading = true;
+        this.loading = true;
         this.saveMemberships(paymentMethod.id);
       }
     },
@@ -444,8 +447,8 @@ export default {
         price: this.paymentAmount,
         items: this.items,
         membership_id: this.membership.id,
-        method:0 ,// with new card
-        payment_for :0 // membership
+        method: 0, // with new card
+        payment_for: 0, // membership
       };
 
       axios
@@ -453,19 +456,20 @@ export default {
         .then((res) => {
           this.message = res.message;
           this.error = {}; // Clear any previous error messages
-          this.showmemberships=true,
-          this.showBuymembership=false,
-          this.PaymentShow=false,
-          this.loading=false
+          (this.showmemberships = true),
+            (this.showBuymembership = false),
+            (this.PaymentShow = false),
+            (this.loading = false);
           this.loadStripe(),
-          this.getCustomerMemberships(),
+            this.getCustomerMemberships(),
+            this.getCustomerCards();
           this.items = {
-          fname: "",
-          lname: "",
-          dob: "",
-          gender: "",
-          activity: "",
-        };
+            fname: "",
+            lname: "",
+            dob: "",
+            gender: "",
+            activity: "",
+          };
           Swal.fire({
             icon: "success",
             title: "Success",
@@ -478,57 +482,57 @@ export default {
             if (data.error) {
               this.errorMessage = data.error;
               this.error = data.error;
-              this.loading=false
+              this.loading = false;
             }
           }
-        }).finally(() => {
-        // Code to run regardless of success or error
-            this.loading=false
-      });
-    },
-    getCustomerCards(){
-        axios.get('/customer-profile').then((res)=>{
-            this.cards=res.data;
+        })
+        .finally(() => {
+          // Code to run regardless of success or error
+          this.loading = false;
         });
     },
-    saveMembershipUsingCard(){
-        if(!this.selectedCard){
-            Swal.fire({
-        icon: 'error',
-        title: 'Validation Error',
-        text: 'Please select your card before proceeding.',
+    getCustomerCards() {
+      axios.get("/customer-profile").then((res) => {
+        this.cards = res.data;
       });
-      return;
-        }
-        const payload = {
-        paymentMethodId:this.selectedCard.paymentMethodId,
-        card:this.selectedCard,
+    },
+    saveMembershipUsingCard() {
+      if (!this.selectedCard) {
+        Swal.fire({
+          icon: "error",
+          title: "Validation Error",
+          text: "Please select your card before proceeding.",
+        });
+        return;
+      }
+      const payload = {
+        paymentMethodId: this.selectedCard.paymentMethodId,
+        card: this.selectedCard,
         price: this.paymentAmount,
         items: this.items,
         membership_id: this.membership.id,
-        method:1, // with old card
-        payment_for:0 // 0 for membership
-
+        method: 1, // with old card
+        payment_for: 0, // 0 for membership
       };
-      this.loading=true
-      axios.post("/customer/membership-payment", payload)
-      .then((res) => {
+      this.loading = true;
+      axios
+        .post("/customer/membership-payment", payload)
+        .then((res) => {
           this.message = res.message;
           this.error = {}; // Clear any previous error messages
-          this.showmemberships=true,
-          this.showBuymembership=false,
-          this.selectedCard=""
-          this.payCard=false,
-          this.loading=false
+          (this.showmemberships = true),
+            (this.showBuymembership = false),
+            (this.selectedCard = "");
+          (this.payCard = false), (this.loading = false);
           this.loadStripe(),
-          this.getCustomerMemberships(),
-          this.items = {
-          fname: "",
-          lname: "",
-          dob: "",
-          gender: "",
-          activity: "",
-        };
+            this.getCustomerMemberships(),
+            (this.items = {
+              fname: "",
+              lname: "",
+              dob: "",
+              gender: "",
+              activity: "",
+            });
           Swal.fire({
             icon: "success",
             title: "Success",
@@ -541,12 +545,11 @@ export default {
             if (data.error) {
               this.errorMessage = data.error;
               this.error = data.error;
-              this.loading=false
+              this.loading = false;
             }
           }
         });
-
-    }
+    },
   },
 };
 </script>

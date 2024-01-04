@@ -100,4 +100,53 @@ class StripePaymentGateway implements Payments {
             ], 500);
         }
     }
+    function chargeGuest($request,$user)
+    {
+        Stripe::setApiKey(config('stripe.sk'));
+        $paymentMethodId = $request->paymentMethodId;
+        $paymentMethod = PaymentMethod::retrieve($paymentMethodId);
+        $lastFourDigits = $paymentMethod->card->last4;
+
+        try {
+            $stripeCustomer = StripeCustomer::create([
+                'name' => $user->name,
+                'email' => $user->email,
+                'payment_method' => $paymentMethodId
+            ]);
+            // Create a PaymentIntent
+            $intent = PaymentIntent::create([
+                'payment_method' => $paymentMethodId,
+                'amount' => $request->totalPayment * 100, // Set the amount to be charged (in cents)
+                'currency' => 'usd',
+                'confirmation_method' => 'manual',
+                'confirm' => true,
+                'return_url' => 'https://127.0.0.1:8000',
+                'customer' => $stripeCustomer,
+            ]);
+            $chargeId = $intent->latest_charge;
+
+
+            // CustomerProfile::create([
+            //     'customer_id' => $user->id,
+            //     'last_four_digits' => $lastFourDigits,
+            //     'customer_payment_id' => $stripeCustomer->id,
+            //     'paymentMethodId' => $paymentMethodId
+            // ]);
+
+            TransactionRecords::create([
+                'customer_id' => $user->id,
+                'payment' => $request->totalPayment,
+                'trx_id' => $chargeId,
+                'payment_for' => 0 // 0 for membership
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Payment successful']);
+        } catch (\Exception $e) {
+
+            // Handle any exceptions or errors
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+
+
+    }
 }
