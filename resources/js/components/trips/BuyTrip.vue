@@ -155,29 +155,105 @@
             </button>
           </div>
           <div class="modal-body">
-            <div class="row">
-              <div class="col-md-12">
-                <div v-if="errorMessage" class="alert alert-danger">
-                  {{ errorMessage }}
-                </div>
-                <div class="form-group">
-                  <label for="card-number">Card Number</label>
+            <div v-show="active===1">
+              <div class="row">
+                <div class="col-md-12">
+                  <div v-if="errorMessage" class="alert alert-danger">
+                    {{ errorMessage }}
+                  </div>
+                  <div class="form-group">
+                    <label for="card-number">Card Number</label>
 
-                  <div id="card-number" class="form-control"></div>
+                    <div id="card-number" class="form-control"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <label for="card-expiry">Expiration Date</label>
+                  <div id="card-expiry" class="form-control"></div>
+                </div>
+                <div class="col-md-6">
+                  <label for="card-cvc">CVC</label>
+                  <div id="card-cvc" class="form-control"></div>
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6">
-                <label for="card-expiry">Expiration Date</label>
-                <div id="card-expiry" class="form-control"></div>
-              </div>
-              <div class="col-md-6">
-                <label for="card-cvc">CVC</label>
-                <div id="card-cvc" class="form-control"></div>
-              </div>
+            <div v-show="active===0">
+                <div class="row">
+                    <div v-if="errorMessage" class="alert alert-danger">
+                      {{ errorMessage }}
+                    </div>
+                    <div class="col-md-8">
+                      <div class="form-group">
+                        <label for="cardNumber" class="form-label">Card Number</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="cardNumber"
+                          maxlength="16"
+                          minlength="16"
+                          v-model="cardNumber"
+                          placeholder="Enter card number"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label for="cvv" class="form-label">CVV</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="cvv"
+                          maxlength="4s"
+                          minlength="3"
+                          v-model="cvv"
+                          placeholder="Enter CVV"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label for="expiryMonth" class="form-label">Expiry Month</label>
+                      <select
+                        class="form-control"
+                        id="expiryMonth"
+                        v-model="expiryMonth"
+                        required
+                      >
+                        <option value="" disabled>Select month</option>
+                        <option v-for="month in months" :key="month" :value="month">
+                          {{ month }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="expiryYear" class="form-label">Expiry Year</label>
+                      <select
+                        class="form-control"
+                        id="expiryYear"
+                        v-model="expiryYear"
+                        required
+                      >
+                        <option value="" disabled>Select year</option>
+                        <option
+                          v-for="year in dynamicYears"
+                          :key="year"
+                          :value="year"
+                        >
+                          {{ year }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
             </div>
+            <!-- Auhtorize  -->
+
           </div>
+
           <div class="modal-footer justify-content-between">
             <button
               type="button"
@@ -186,7 +262,7 @@
             >
               Close
             </button>
-            <button
+            <button v-show="active===1"
               type="button"
               class="btn btn-outline-dark"
               @click="submit"
@@ -199,6 +275,20 @@
                 aria-hidden="true"
               ></span>
               <span v-else>Save</span>
+            </button>
+            <button v-show="active===0"
+              type="button"
+              class="btn btn-outline-dark"
+              @click="saveMemberTipsViaAuthorize"
+              :disabled="loading"
+            >
+              <span
+                v-if="loading"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span v-else>Save </span>
             </button>
           </div>
         </div>
@@ -234,10 +324,33 @@ export default {
       tripMembers: [],
       paymentShow: false,
       loading: false,
+       // authorize
+       months: [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+      ],
+      years: ["2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"],
+      cardNumber: "",
+      cvv: "",
+      expiryMonth: "",
+      expiryYear: "",
+      active: null,
+
     };
   },
   mounted() {
     this.loadStripe();
+    this.getActiveGateway();
     this.getTrips(), this.getCustomers(), this.getTripMembers(); // Add this line
   },
   computed: {
@@ -273,8 +386,22 @@ export default {
 
       return availableSeatsCounts;
     },
+    dynamicYears() {
+      const currentYear = new Date().getFullYear();
+      const futureYears = Array.from(
+        { length: 15 },
+        (_, index) => currentYear + index
+      );
+      return futureYears.map(String); // Convert years to strings
+    },
   },
   methods: {
+
+    getActiveGateway() {
+      axios.get("/get/gateway").then((res) => {
+        this.active = res.data;
+      });
+    },
     showPaymentMethod() {
       if (
         this.selectedMembers.length === 0 ||
@@ -384,8 +511,8 @@ export default {
             trip_id: this.selectedTrip.id,
             customer_id: this.selectedCustomer.id,
             member: { ...this.selectedMembers },
-            method:0,
-            payment_for:1 // 1 for tripe
+            method: 0,
+            payment_for: 1, // 1 for tripe
           };
 
           axios
@@ -411,7 +538,77 @@ export default {
                 if (data.error) {
                   this.errorMessage = data.error;
                   this.error = data.error;
-                  this.loading=false
+                  this.loading = false;
+                }
+              }
+            });
+        }
+      }
+    },
+
+    saveMemberTipsViaAuthorize(){
+        if (
+        this.selectedMembers.length === 0 ||
+        this.selectedLocation.length === 0
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please select At least one Member and Location",
+        });
+      } else {
+        const locationId = this.selectedLocation;
+        const availableSeats = this.availableSeats[locationId];
+
+        if (availableSeats === 0) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "No available seats for the selected location.",
+          });
+        } else {
+            this.loading = true;
+          const payload = {
+            cardNumber: this.cardNumber,
+            cvv: this.cvv,
+            expiryMonth: this.expiryMonth,
+            expiryYear: this.expiryYear,
+            loc_id: locationId,
+            trip_id: this.selectedTrip.id,
+            customer_id: this.selectedCustomer.id,
+            member: { ...this.selectedMembers },
+            method: 0,
+            payment_for: 1, // 1 for tripe
+          };
+
+          axios
+            .post("/savetrip", payload)
+            .then((res) => {
+              this.message = res.data.message;
+              this.error = {}; // Clear any previous error messages
+              this.selectedCustomer = [];
+              this.selectedMembers = [];
+              this.selectedLocation = [];
+              this.selectedTrip = [];
+              this.showModalTwo = false;
+              cardNumber: "",
+              this.cvv= "",
+              this.expiryMonth= "",
+              this.expiryYear= "",
+            (this.paymentShow = false), (this.loading = false);
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: res.data.message,
+              });
+            })
+            .catch((error) => {
+              if (error.response && error.response.data) {
+                const { data } = error.response;
+                if (data.error) {
+                  this.errorMessage = data.error;
+                  this.error = data.error;
+                  this.loading = false;
                 }
               }
             });

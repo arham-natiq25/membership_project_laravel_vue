@@ -13,6 +13,7 @@ class TransactionRecords extends Model
         'customer_id',
         'payment',
         'trx_id',
-        'payment_for'
+        'payment_for',
+        'gateway'
     ];
 }

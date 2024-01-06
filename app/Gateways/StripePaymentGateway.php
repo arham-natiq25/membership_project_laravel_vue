@@ -73,7 +73,8 @@ class StripePaymentGateway implements Payments {
                         'customer_id'=>$user->id,
                         'last_four_digits'=>$lastFourDigits,
                         'customer_payment_id'=>$stripeCustomer->id,
-                        'paymentMethodId'=>$paymentMethodId
+                        'paymentMethodId'=>$paymentMethodId,
+                        'gateway'=>1
                     ]);
                 }
 
@@ -81,7 +82,8 @@ class StripePaymentGateway implements Payments {
                     'customer_id'=>$user->id,
                     'payment'=>$price,
                     'trx_id'=>$chargeId,
-                    'payment_for'=>$request->payment_for // 1 for trip
+                    'payment_for'=>$request->payment_for, // 1 for trip
+                    'gateway'=>1
                 ]);
 
                 if ($request->payment_for===0) {
@@ -137,7 +139,8 @@ class StripePaymentGateway implements Payments {
                 'customer_id' => $user->id,
                 'payment' => $request->totalPayment,
                 'trx_id' => $chargeId,
-                'payment_for' => 0 // 0 for membership
+                'payment_for' => 0, // 0 for membership
+                'gateway'=>1
             ]);
 
             return response()->json(['success' => true, 'message' => 'Payment successful']);

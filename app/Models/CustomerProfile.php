@@ -13,6 +13,7 @@ class CustomerProfile extends Model
         'customer_id',
         'last_four_digits',
         'customer_payment_id',
-        'paymentMethodId'
+        'paymentMethodId',
+        'gateway'
     ];
 }

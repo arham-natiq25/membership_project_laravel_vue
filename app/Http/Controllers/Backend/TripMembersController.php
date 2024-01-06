@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Gateways\AuthorizenetPaymentGateway;
 use App\Gateways\StripePaymentGateway;
 use App\helper\paymentProcessing;
 use App\Http\Controllers\Controller;
@@ -11,6 +12,7 @@ use App\Models\CustomerProfile;
 use App\Models\EmailManager;
 use App\Models\Location;
 use App\Models\Member;
+use App\Models\Setting;
 use App\Models\TransactionRecords;
 use App\Models\Trip;
 use App\Models\TripMember;
@@ -23,7 +25,11 @@ class TripMembersController extends Controller
 {
     public function savetrip(Request $request)
     {
-      
+        $setting = Setting::find(1);
+
+
+
+
         $loc_id = $request->input('loc_id');
         $customer_id = $request->input('customer_id');
         $trip_id = $request->input('trip_id');
@@ -34,9 +40,15 @@ class TripMembersController extends Controller
 
         $member_ids = $request->input('member');
         $location = Location::find($loc_id);
-        // HERE CHARGE A CUSTOMER
-        $gateway = new StripePaymentGateway();
-        $res = $gateway->charge($request);
+
+        if ($setting===null || $setting->active_gateway===1) {
+            $charge = new StripePaymentGateway();
+            $res = $charge->charge($request);
+        }elseif ($setting->active_gateway===0) {
+            $charge = new AuthorizenetPaymentGateway();
+            $res = $charge->charge($request);
+        }
+
         // IF CHARGE IS SUCCESSFULL THEN SAVE DETAILS
         if ($res->isSuccessful()) {
             foreach ($member_ids as $member_id) {
