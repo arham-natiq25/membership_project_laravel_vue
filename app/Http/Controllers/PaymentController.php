@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Gateways\AuthorizenetPaymentGateway;
 use App\Gateways\StripePaymentGateway;
 use App\Models\Customer;
 use App\Models\CustomerProfile;
 use App\Models\Member;
+use App\Models\Setting;
 use App\Models\TransactionRecords;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,15 +21,25 @@ class PaymentController extends Controller
 {
     public function processPayment(Request $request)
     {
+        $setting = Setting::find(1);
+
+        $user = User::where('email', $request->email)->first();
+        if(!$user){
              $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role' => 'customer'
             ]);
-
+        }
+        if ($setting===null || $setting->active_gateway===1) {
             $charge = new StripePaymentGateway();
             $res =  $charge->chargeGuest($request,$user);
+        }elseif ($setting->active_gateway===0) {
+            $charge = new AuthorizenetPaymentGateway();
+            $res =  $charge->chargeGuest($request,$user);
+        }
+
 
             if($res->isSuccessful()){
                 $customer =   Customer::create([

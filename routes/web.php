@@ -58,7 +58,7 @@ Route::get('/setting',function () {
 })->name('setting');
 // set Gateway
 Route::post('/update/gateway',[SettingController::class,'UpdateGateway'])->name('update-gateway')->middleware('admin');
-Route::get('/get/gateway',[SettingController::class,'getGateway'])->name('get-gateway')->middleware('admin');
+Route::get('/get/gateway',[SettingController::class,'getGateway'])->name('get-gateway');
 
 
 // here
