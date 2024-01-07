@@ -591,7 +591,7 @@ export default {
               this.selectedLocation = [];
               this.selectedTrip = [];
               this.showModalTwo = false;
-              cardNumber: "",
+              this.cardNumber= "",
               this.cvv= "",
               this.expiryMonth= "",
               this.expiryYear= "",
