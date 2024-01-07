@@ -146,18 +146,80 @@
             ><b>${{ this.paymentAmount }}</b>
           </div>
         </div>
-        <div class="form-group">
-          <label for="card-number">Card Number</label>
-          <div id="card-number" class="form-control"></div>
-        </div>
-        <div class="row justify-content-center">
-          <div class="col-md-6">
-            <label for="card-expiry">Expiration Date</label>
-            <div id="card-expiry" class="form-control"></div>
+        <div v-show="active===1">
+          <div class="form-group">
+            <label for="card-number">Card Number</label>
+            <div id="card-number" class="form-control"></div>
           </div>
-          <div class="col-md-6">
-            <label for="card-cvc">CVC</label>
-            <div id="card-cvc" class="form-control"></div>
+          <div class="row justify-content-center">
+            <div class="col-md-6">
+              <label for="card-expiry">Expiration Date</label>
+              <div id="card-expiry" class="form-control"></div>
+            </div>
+            <div class="col-md-6">
+              <label for="card-cvc">CVC</label>
+              <div id="card-cvc" class="form-control"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Authorize Gateway  -->
+        <div v-show="active===0">
+          <div class="form-group">
+            <label for="cardNumber" class="form-label">Card Number</label>
+            <input
+              type="text"
+              class="form-control"
+              id="cardNumber"
+              maxlength="16"
+              minlength="16"
+              v-model="cardNumber"
+              placeholder="Enter card number"
+              required
+            />
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-md-4">
+              <label for="cvv" class="form-label">CVV</label>
+              <input
+                type="text"
+                class="form-control"
+                id="cvv"
+                maxlength="4s"
+                minlength="3"
+                v-model="cvv"
+                placeholder="Enter CVV"
+                required
+              />
+            </div>
+            <div class="col-md-4">
+              <label for="expiryMonth" class="form-label">Expiry Month</label>
+              <select
+                class="form-control"
+                id="expiryMonth"
+                v-model="expiryMonth"
+                required
+              >
+                <option value="" disabled>Select month</option>
+                <option v-for="month in months" :key="month" :value="month">
+                  {{ month }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="expiryYear" class="form-label">Expiry Year</label>
+              <select
+                class="form-control"
+                id="expiryYear"
+                v-model="expiryYear"
+                required
+              >
+                <option value="" disabled>Select year</option>
+                <option v-for="year in dynamicYears" :key="year" :value="year">
+                  {{ year }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="row mt-3">
@@ -173,6 +235,7 @@
           </div>
           <div class="col-md-6 text-right">
             <button
+              v-show="active===1"
               type="button"
               class="btn btn-outline-dark"
               @click="submit"
@@ -186,7 +249,24 @@
               ></span>
               <span v-else>Payment</span>
             </button>
+            <button
+              v-show="active===0"
+              type="button"
+              class="btn btn-outline-dark"
+              @click="submitViaAuthorize"
+              :disabled="loading"
+            >
+              <span
+                v-if="loading"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              <span v-else>Payment Auh</span>
+            </button>
           </div>
+          <!-- Authorize  -->
+
         </div>
       </div>
     </div>
@@ -288,13 +368,44 @@ export default {
       payCard: false,
       cards: [],
       selectedCard: "",
+      months: [
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+      ],
+      years: ["2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030"],
+      cardNumber: "",
+      cvv: "",
+      expiryMonth: "",
+      expiryYear: "",
+      active: null,
     };
   },
   mounted() {
+      this.getActiveGateway();
     this.getCustomerMemberships();
     this.loadStripe();
     this.getCustomerCards();
     this.getActiveMembership();
+  },
+  computed: {
+    dynamicYears() {
+      const currentYear = new Date().getFullYear();
+      const futureYears = Array.from(
+        { length: 15 },
+        (_, index) => currentYear + index
+      );
+      return futureYears.map(String); // Convert years to strings
+    },
   },
   methods: {
     getCustomerMemberships() {
@@ -425,6 +536,11 @@ export default {
         console.error("Stripe is not available");
       }
     },
+    getActiveGateway() {
+      axios.get("/get/gateway").then((res) => {
+        this.active = res.data;
+      });
+    },
     async submit() {
       // Set loading to true before making the API call
       this.errorMessage = "";
@@ -444,6 +560,60 @@ export default {
     saveMemberships(paymentMethodId) {
       const payload = {
         paymentMethodId,
+        price: this.paymentAmount,
+        items: this.items,
+        membership_id: this.membership.id,
+        method: 0, // with new card
+        payment_for: 0, // membership
+      };
+
+      axios
+        .post("/customer/membership-payment", payload)
+        .then((res) => {
+          this.message = res.message;
+          this.error = {}; // Clear any previous error messages
+          (this.showmemberships = true),
+            (this.showBuymembership = false),
+            (this.PaymentShow = false),
+            (this.loading = false);
+          this.loadStripe(),
+            this.getCustomerMemberships(),
+            this.getCustomerCards();
+          this.items = {
+            fname: "",
+            lname: "",
+            dob: "",
+            gender: "",
+            activity: "",
+          };
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: res.data.message,
+          });
+        })
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            const { data } = error.response;
+            if (data.error) {
+              this.errorMessage = data.error;
+              this.error = data.error;
+              this.loading = false;
+            }
+          }
+        })
+        .finally(() => {
+          // Code to run regardless of success or error
+          this.loading = false;
+        });
+    },
+    submitViaAuthorize(){
+        this.loading=true;
+        const payload = {
+        cardNumber: this.cardNumber,
+        cvv: this.cvv,
+        expiryMonth: this.expiryMonth,
+        expiryYear: this.expiryYear,
         price: this.paymentAmount,
         items: this.items,
         membership_id: this.membership.id,

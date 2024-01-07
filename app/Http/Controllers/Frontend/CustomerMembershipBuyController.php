@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Frontend;
 
+use App\Gateways\AuthorizenetPaymentGateway;
 use App\Gateways\StripePaymentGateway;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\CustomerProfile;
 use App\Models\Member;
+use App\Models\Setting;
 use App\Models\TransactionRecords;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +21,7 @@ class CustomerMembershipBuyController extends Controller
 {
     function index(Request $request)
     {
-        
+            $setting = Setting::find(1);
             $user = Auth::user();
             $customer = Customer::where('user_id', $user->id)->first();
             $memberData = $request->items;
@@ -28,8 +30,13 @@ class CustomerMembershipBuyController extends Controller
             $activity = ($memberData['activity'] === 'skier') ? 1 : 0;
 
 
-            $charge = new StripePaymentGateway();
-            $res= $charge->charge($request);
+            if ($setting===null || $setting->active_gateway===1) {
+                $charge = new StripePaymentGateway();
+                $res = $charge->charge($request);
+            }elseif ($setting->active_gateway===0) {
+                $charge = new AuthorizenetPaymentGateway();
+                $res = $charge->charge($request);
+            }
 
             if ($res->isSuccessful()) {
                 $member =   Member::create([

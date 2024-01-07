@@ -655,7 +655,7 @@ export default {
             text: "No available seats for the selected location.",
           });
         }else {
-            this.loading = true;
+         this.loading = true;
           const payload = {
             cardNumber: this.cardNumber,
             cvv: this.cvv,
@@ -731,7 +731,7 @@ export default {
             customer_id: this.loginCustomer.id,
             member: { ...this.selectedMembers },
             method:1,
-            payment_for:1 // 1for trips
+            payment_for: 1 // 1for trips
           };
 
           axios
