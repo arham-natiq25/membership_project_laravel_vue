@@ -55,12 +55,13 @@
 
         <!-- /.content-wrapper -->
 
-        <footer class="fixed-bottom m-3">
-            <div class="container">
+        <footer class="fixed-bottom p-3" style="background-color: black;">
+            <div class="container text-white">
                 <div class="float-right d-none d-sm-block">
-                    <b>Version</b> 3.2.0
                 </div>
-                <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights
+                <strong class="text-white">Copyright &copy; 2023-27</strong>
+
+                All rights
                 reserved.
             </div>
         </footer>

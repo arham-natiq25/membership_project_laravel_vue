@@ -1,6 +1,6 @@
 @extends('frontend.master')
 @section('title')
-    Frontend Membership
+   SKI Company
 @endsection
 @section('content')
 <section class="content">

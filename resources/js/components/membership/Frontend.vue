@@ -25,78 +25,70 @@
     </div>
     <div>
         <div v-if="showMemberships">
-          <div class="row">
-            <div v-if="errorMessage" class="alert alert-danger" role="alert">
+            <div class="row">
+              <div v-if="errorMessage" class="alert alert-danger" role="alert">
                 {{ errorMessage }}
               </div>
-            <div class="col-md-12">
-              <div class="card-container">
-                <h4>Membership Details</h4>
-                <div class="row mt-3">
-                  <!-- Show membershiips that are active although only one membership is actived at a time  -->
-                  <div
-                    class="card"
-                    style="margin-bottom: 20px"
-                    v-if="activeMembership != null"
-                  >
-                    <div class="card-body">
-                      <span class="fst-italic h5">Title : </span>
-                      <span class="text-primary h5">{{
-                        activeMembership.title
-                      }}</span>
-                      <div class="card-text mt-2">
-                        <span class="text-primary">First Date :</span>
-                        {{ activeMembership.first_date }} &
-                        <span class="text-primary">First Price :</span> ${{
-                          activeMembership.first_price
-                        }}
-                        <br /><br />
-                        <span class="text-primary">Second Date :</span>
-                        {{ activeMembership.second_date }} &
-                        <span class="text-primary">Second Price :</span> ${{
-                          activeMembership.second_price
-                        }}
-                        <br />
-                        <br />
-                        <span class="text-primary">Third Date :</span>
-                        {{ activeMembership.third_date }} &
-                        <span class="text-primary">Third Price :</span> ${{
-                          activeMembership.third_price
-                        }}
-                        <br />
-                        <br />
+
+              <!-- Membership card on the left -->
+              <div class="col-md-6">
+                <div class="card-container">
+                  <h4>Membership Details</h4>
+                  <div class="row mt-3">
+                    <!-- Show memberships that are active (only one at a time) -->
+                    <div
+                      class="card"
+                      style="margin-bottom: 20px"
+                      v-if="activeMembership != null"
+                    >
+                      <div class="card-body">
+                        <span class="fst-italic h5">Title : </span>
+                        <span class="text-primary h5">{{ activeMembership.title }}</span>
+                        <div class="card-text mt-2">
+                          <span class="text-primary">First Date :</span>
+                          {{ activeMembership.first_date }} &
+                          <span class="text-primary">First Price :</span> ${{ activeMembership.first_price }}
+                          <br /><br />
+                          <span class="text-primary">Second Date :</span>
+                          {{ activeMembership.second_date }} &
+                          <span class="text-primary">Second Price :</span> ${{ activeMembership.second_price }}
+                          <br /><br />
+                          <span class="text-primary">Third Date :</span>
+                          {{ activeMembership.third_date }} &
+                          <span class="text-primary">Third Price :</span> ${{ activeMembership.third_price }}
+                          <br /><br />
+                        </div>
                       </div>
-                      <p class="card-text"></p>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="membershipBuying"
-                  >How many Memberships do you want to buy ?
-                </label>
-                <!-- Here how many we input it gets in membershipCount  -->
-                <input
-                  type="number"
-                  class="form-control"
-                  id="membershipBuying"
-                  name="membershipBuying"
-                  v-model="membershipCount"
-                />
+
+              <!-- Input fields on the right -->
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="membershipBuying">
+                    How many Memberships do you want to buy?
+                  </label>
+                  <!-- Here how many we input gets into membershipCount -->
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="membershipBuying"
+                    name="membershipBuying"
+                    v-model="membershipCount"
+                  />
+                </div>
+                <div class="mt-4">
+                  <!-- on click of this button function of showUserDetails is called -->
+                  <button class="btn btn-warning mt-1" @click="showUserDetails">
+                    Next
+                  </button>
+                </div>
               </div>
             </div>
-            <div class="col-md-2 mt-md-4">
-              <!-- on click of this button function of show User Detaisl is called  -->
-              <button class="btn btn-warning mt-1" @click="showUserDetails">
-                Next
-              </button>
-            </div>
           </div>
-        </div>
+
     </div>
 
 

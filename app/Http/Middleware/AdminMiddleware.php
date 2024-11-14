@@ -18,13 +18,14 @@ class AdminMiddleware
     {
         if (Auth::check()) {
             // Check if the user has the "admin" role
-            if (Auth::user()->role === "admin") {
+            if (Auth::user()->role === 'admin')
+            {
                 return $next($request);
-            } else {
+            }
                 // User doesn't have the "admin" role, show a toast message or perform another action
                 // return response()->json(['error' => 'Unauthorized. You do not have the required role.'], 403);
                 return redirect()->back();
-            }
+
         }
 
         // User is not authenticated, redirect to login page
