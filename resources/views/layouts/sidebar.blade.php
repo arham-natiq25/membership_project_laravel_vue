@@ -1,13 +1,13 @@
  <!-- Main Sidebar Container -->
- <aside class="main-sidebar sidebar-dark-primary elevation-4">
+ <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: black;">
     <!-- Brand Logo -->
 
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user (optional) -->
-      <div class="user-panel text-center mt-3 pb- mb-">
-        <div class="info">
-          <a href="#" class="d-block">SKI COMPANY</a>
+      <div class="user-panel text-center mt-3">
+          <div class="info">
+            <img src="{{asset('iz7j5lhh.bmp')}}" style="min-width: 100px;">
         <p class="text-white">Welcome  {{Auth::user()->name}}</p>
         </div>
     </div>
@@ -26,7 +26,7 @@
                   </p>
                 </a>
             </li>
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a href="#" class="nav-link">
                 <i class="nav-icon far fa-copy"></i>
               <p>
@@ -54,7 +54,7 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li> --}}
           <li class="nav-item">
             <a href="{{route('customer')}}" class="nav-link">
                 <i class="far fa-address-card nav-icon"></i>
